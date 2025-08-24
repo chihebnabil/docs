@@ -20,7 +20,7 @@
           {
             "group": "Getting Started",
             "pages": [
-              "0.0.6/nextlovable_migration_doc.mdx"
+              "0.0.6/index.mdx"
             ]
           }
         ]
@@ -31,7 +31,7 @@
           {
             "group": "Getting Started",
             "pages": [
-              "0.0.7/nextlovable_migration_doc_v0.0.7.mdx"
+              "0.0.7/index.mdx"
             ]
           }
         ]
