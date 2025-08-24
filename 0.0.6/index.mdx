@@ -2,13 +2,14 @@
 title: "next-lovable CLI"
 description: "Automatically migrate React applications to Next.js 13+ App Router with intelligent React Router conversion"
 icon: "rocket"
+version: "0.0.64"
 ---
 
 <Card title="What is next-lovable?" icon="lightbulb">
   A smart CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
 </Card>
 
-## ✨ Key Features
+## Key Features
 
 <CardGroup cols={2}>
   <Card title="Smart Router Conversion" icon="route">
@@ -25,7 +26,7 @@ icon: "rocket"
   </Card>
 </CardGroup>
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -56,7 +57,7 @@ npm install -g next-lovable
   Installing globally allows you to use `next-lovable` from anywhere on your system.
 </Tip>
 
-## 🎯 Usage Guide
+## Usage Guide
 
 ### Full Project Migration
 
@@ -81,7 +82,7 @@ npm install -g next-lovable
   </Step>
 </Steps>
 
-## 📚 Command Reference (Requires Account)
+## Command Reference (Requires Account)
 
 <ParamField path="source-directory" type="string" required>
   Path to your React application
@@ -103,7 +104,7 @@ npm install -g next-lovable
   Install dependencies after migration
 </ParamField>
 
-## 🔄 What Gets Converted
+## What Gets Converted
 
 ### React Router → Next.js Router
 
@@ -181,7 +182,7 @@ export const PageMeta = ({ title, description }) => (
 </CodeGroup>
 
 
-## 📊 Command Comparison Table
+## Command Comparison Table
 
 | Task                      | Command                                          | Credits Required | Authentication |
 | ------------------------- | ------------------------------------------------ | ---------------- | -------------- |
@@ -200,11 +201,7 @@ export const PageMeta = ({ title, description }) => (
   Always backup your original project before running a full migration\!
 </Warning>
 
-<Tip>
-  Start with the free single file conversion to get familiar with the tool before migrating entire projects.
-</Tip>
-
-## 🐛 Limitations & Best Practices
+## Limitations & Best Practices
 
 ### Known Limitations
 
@@ -221,9 +218,9 @@ export const PageMeta = ({ title, description }) => (
 4. **Review generated files** before deployment
 5. **Test thoroughly** after migration
 
-## 🆘 Getting Help
+## Getting Help
 
-<CardGroup cols={2}>
+<CardGroup>
   <Card title="List Available Commands" icon="terminal">
     ```bash
     next-lovable --help
