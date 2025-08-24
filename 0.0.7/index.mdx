@@ -5,7 +5,7 @@ icon: "rocket"
 ---
 
 <Card title="What is next-lovable?" icon="lightbulb">
-  A smart CLI tool that automatically converts your React applications to Next.js 13+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
+  A smart CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
 </Card>
 
 ## ✨ Key Features
@@ -42,7 +42,7 @@ Before you begin, make sure you have:
     A React application using React Router and Vite
   </Step>
   <Step title="nextlovable.com account">
-    Only needed for full project migrations (single file conversion is free!)
+    Only needed for full project migrations (single file conversion is free\!)
   </Step>
 </Steps>
 
@@ -60,29 +60,33 @@ npm install -g next-lovable
 
 ### Testing Individual Files (Free & No Auth Required)
 
-Perfect for beginners! Test how your components will be converted without using credits or signing up.
+Perfect for beginners\! Test how your components will be converted without using credits or signing up.
 
 <CodeGroup>
+
 ```bash Basic Conversion
 # Convert a single component file
 next-lovable convert MyComponent.tsx
 ```
+
 
 ```bash Preview Changes
 # See what changes will be made without modifying the file
 next-lovable convert MyComponent.tsx --dry-run --show-diff
 ```
 
+
 ```bash Save to Different Location
 # Convert and save to a new location
 next-lovable convert MyComponent.tsx --output ./converted/MyComponent.tsx
 ```
+
 </CodeGroup>
 
 ### Full Project Migration
 
 <Warning>
-  Full project migration requires a nextlovable.com account and consumes credits. Always test individual files first!
+  Full project migration requires a nextlovable.com account and consumes credits. Always test individual files first\!
 </Warning>
 
 <Steps>
@@ -90,13 +94,14 @@ next-lovable convert MyComponent.tsx --output ./converted/MyComponent.tsx
     ```bash
     next-lovable migrate ./my-react-app --dry-run
     ```
+
     This shows you exactly what will be changed without making any modifications.
   </Step>
-  
   <Step title="Execute the Migration">
     ```bash
     next-lovable migrate ./my-react-app ./next-app --yes --install
     ```
+
     This creates a new Next.js project and installs dependencies.
   </Step>
 </Steps>
@@ -152,6 +157,7 @@ next-lovable convert MyComponent.tsx --output ./converted/MyComponent.tsx
 ### React Router → Next.js Router
 
 <CodeGroup>
+
 ```tsx Before (React Router)
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -169,6 +175,7 @@ export const Navigation = () => {
   );
 };
 ```
+
 
 ```tsx After (Next.js)
 'use client';
@@ -190,11 +197,13 @@ export const Navigation = () => {
   );
 };
 ```
+
 </CodeGroup>
 
 ### React Helmet → Next.js Head
 
 <CodeGroup>
+
 ```tsx Before (React Helmet)
 import { Helmet } from 'react-helmet';
 
@@ -206,6 +215,7 @@ export const PageMeta = ({ title, description }) => (
 );
 ```
 
+
 ```tsx After (Next.js Head)
 import Head from 'next/head';
 
@@ -216,6 +226,7 @@ export const PageMeta = ({ title, description }) => (
   </Head>
 );
 ```
+
 </CodeGroup>
 
 ## 🎛️ Available Transformations
@@ -224,24 +235,21 @@ export const PageMeta = ({ title, description }) => (
   <Accordion title="router - React Router Conversion">
     - `useNavigate()` → `useRouter()` from `next/navigation`
     - `<Link to="/path">` → `<Link href="/path">` from `next/link`
-    - `useLocation()` → `usePathname()` + `useSearchParams()`
+    - `useLocation()` → `usePathname()` \+ `useSearchParams()`
     - `useParams()` → Next.js `useParams()`
     - Template literals in paths are preserved
   </Accordion>
-
   <Accordion title="helmet - React Helmet Conversion">
     - `<Helmet>` → `<Head>` from `next/head`
     - Meta tags and title preservation
     - SEO attributes maintained
   </Accordion>
-
   <Accordion title="client - Client Component Detection">
     - Automatic "use client" directive addition
     - Detects React hooks (useState, useEffect, etc.)
     - Identifies event handlers (onClick, onChange, etc.)
     - Recognizes browser APIs (window, document, localStorage)
   </Accordion>
-
   <Accordion title="context - Context Provider Migration">
     - Converts React Context providers
     - Maintains context functionality in Next.js structure
@@ -253,28 +261,29 @@ export const PageMeta = ({ title, description }) => (
 <Steps>
   <Step title="Start Small">
     Test individual components first to understand what changes:
+
     ```bash
     next-lovable convert src/components/Header.tsx --dry-run --show-diff
     ```
   </Step>
-  
   <Step title="Convert Key Files">
     Convert your main routing components:
+
     ```bash
     next-lovable convert src/App.tsx --dry-run
     next-lovable convert src/components/Navigation.tsx --dry-run
     ```
   </Step>
-  
   <Step title="Preview Full Migration">
     See what a full project migration would look like:
+
     ```bash
     next-lovable migrate ./my-react-app --dry-run
     ```
   </Step>
-  
   <Step title="Execute Migration">
     When you're ready, run the full migration:
+
     ```bash
     next-lovable migrate ./my-react-app ./my-next-app --install
     ```
@@ -283,24 +292,24 @@ export const PageMeta = ({ title, description }) => (
 
 ## 📊 Command Comparison Table
 
-| Task | Command | Credits Required | Authentication |
-|------|---------|------------------|----------------|
-| List transformations | `next-lovable convert --list` | ❌ No | ❌ No |
-| Test single file | `next-lovable convert MyComponent.tsx --dry-run` | ❌ No | ❌ No |
-| Convert single file | `next-lovable convert MyComponent.tsx` | ❌ No | ❌ No |
-| Preview project migration | `next-lovable migrate ./my-app --dry-run` | ✅ Yes | ✅ Yes |
-| Full project migration | `next-lovable migrate ./my-app ./next-app` | ✅ Yes | ✅ Yes |
+| Task                      | Command                                          | Credits Required | Authentication |
+| ------------------------- | ------------------------------------------------ | ---------------- | -------------- |
+| List transformations      | `next-lovable convert --list`                    | ❌ No             | ❌ No           |
+| Test single file          | `next-lovable convert MyComponent.tsx --dry-run` | ❌ No             | ❌ No           |
+| Convert single file       | `next-lovable convert MyComponent.tsx`           | ❌ No             | ❌ No           |
+| Preview project migration | `next-lovable migrate ./my-app --dry-run`        | ✅ Yes            | ✅ Yes          |
+| Full project migration    | `next-lovable migrate ./my-app ./next-app`       | ✅ Yes            | ✅ Yes          |
 
 ## ⚠️ Important Notes
 
 <Note>
-  **Version 0.6+**: Uses new subcommand structure (`migrate`, `convert`)
-  
+  **Version 0.6\+**: Uses new subcommand structure (`migrate`, `convert`)
+
   **Version 0.5 and earlier**: Uses legacy command format
 </Note>
 
 <Warning>
-  Always backup your original project before running a full migration!
+  Always backup your original project before running a full migration\!
 </Warning>
 
 <Tip>
@@ -310,14 +319,16 @@ export const PageMeta = ({ title, description }) => (
 ## 🐛 Limitations & Best Practices
 
 ### Known Limitations
+
 - Complex custom route configurations may need manual adjustments
 - Dynamic route parameters might require review
 - Some third-party integrations may need updates
 - Complex state management setups might need fine-tuning
 
 ### Best Practices
+
 1. **Always test individual files first** using the free `convert` command
-2. **Run `--dry-run`** before any actual migration
+2. **`Run --dry-run`** before any actual migration
 3. **Keep backups** of your original project
 4. **Review generated files** before deployment
 5. **Test thoroughly** after migration
@@ -339,4 +350,4 @@ export const PageMeta = ({ title, description }) => (
 
 ---
 
-Ready to migrate your React app to Next.js? Start with a simple file conversion to see the magic in action! 🚀
+Ready to migrate your React app to Next.js? Start with a simple file conversion to see the magic in action\! 🚀
