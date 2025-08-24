@@ -1,44 +1,134 @@
-# Mintlify Starter Kit
+---
+title: Next-Lovable v0.0.6 and Earlier
+version: 0.0.6
+---
 
-Use the starter kit to get your docs deployed and ready to customize.
+An intelligent CLI tool to automatically migrate React applications to Next.js 13+ (App Router), specializing in React Router to App Router conversions.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Key Features
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+- Smart React Router to Next.js App Router conversion
+- Automated migration from Vite to Next.js build system
+- Intelligent component transformation with `use client` directives
+- Automatic handling of:
+  - Route configurations
+  - Layouts and page structures
+  - Package dependencies
+  - React Helmet to Next.js Metadata
+  - Client/Server component separation
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Prerequisites
 
-## Development
+Before using the tool, make sure you have:
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+- Node.js 18.x or higher
+- npm or yarn installed
+- A [nextlovable.com](https://nextlovable.com) account
+- A React project using:
+  - React Router
+  - Vite
+  - TypeScript (optional but recommended)
 
+## Installation
+
+To install Next-Lovable globally:
+
+```bash
+npm install -g next-lovable
 ```
-npm i -g mint
+
+## Authentication
+
+The tool requires authentication with your nextlovable.com account:
+- You will be prompted to log in the first time you use it
+- Sessions are stored securely for future use
+- Tokens are refreshed automatically
+
+## Usage
+
+### Basic Command
+
+```bash
+next-lovable <source-directory> [target-directory]
 ```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+### Dry Run Mode (Recommended First Step)
 
+```bash
+next-lovable ./my-react-app --dry-run
 ```
-mint dev
+
+The `--dry-run` option provides:
+- Complete project analysis
+- Detailed migration report
+- Warnings about potential issues
+- List of files to be modified
+- Preview of transformations
+- No actual changes made
+
+### Full Migration
+
+```bash
+next-lovable ./my-react-app ./next-app --yes --install
 ```
 
-View your local preview at `http://localhost:3000`.
+### Available Options
 
-## Publishing changes
+- `-y, --yes`: Skip confirmation prompts
+- `-i, --install`: Install dependencies after migration
+- `-d, --dry-run`: Run in simulation mode without making changes
+- `--help`: Show help information
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+## Migration Process
 
-## Need help?
+1. **Authentication & Validation**
+   - Verify your account
+   - Validate the project structure
+   - Check dependencies
 
-### Troubleshooting
+2. **Smart Analysis**
+   - Analyze route structure
+   - Classify components
+   - Detect context providers
+   - Identify client/server boundaries
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+3. **Automated Transformations**
+   - Convert React Router to App Router
+   - Create layout structures
+   - Migrate components
+   - Update dependencies
+   - Generate configuration files
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
-- [Mintlify community](https://mintlify.com/community)
+4. **Post-Migration Setup**
+   - Configure Next.js
+   - Adjust TypeScript settings
+   - Prepare the development environment
+
+## Intelligent Features
+
+- Component analysis for `use client` directives
+- Automatic migration of context providers
+- Preservation and enhancement of layout structures
+- Dependency resolution and cleanup
+- TypeScript support and type preservation
+
+## Post-Migration Steps
+
+1. Review the generated files in `src/app`
+2. Run `npm run dev` to start the development server
+3. Test your routes
+4. Verify component functionality
+
+## Limitations
+
+- Complex custom route configurations may need manual adjustments
+- Dynamic route parameters may require review
+- Some third-party integrations may need updates
+- Complex state management setups may need fine-tuning
+
+## Best Practices
+
+1. Always run `--dry-run` first
+2. Keep a backup of your original project
+3. Review generated files before deployment
+4. Test thoroughly after migration
