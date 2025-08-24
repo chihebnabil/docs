@@ -1,42 +1,42 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
   "name": "Next-Lovable",
+  "theme": "mint",
   "logo": {
     "light": "/logo-light.svg",
     "dark": "/logo-dark.svg"
   },
   "favicon": "/favicon.ico",
   "colors": {
-    "primary": "#2563eb", 
-    "secondary": "#64748b",
-    "background": "#ffffff",
-    "backgroundDark": "#0f172a",
-    "text": "#1e293b",
-    "textDark": "#f8fafc"
+    "primary": "#2563eb",
+    "light": "#93c5fd",
+    "dark": "#1e40af"
   },
-  "navigationStyle": "sidebar",
-  "versions": {
-    "0.0.6": {
-      "label": "v0.0.6 and earlier",
-      "navigation": [
-        {
-          "group": "Getting Started",
-          "pages": [
-            { "title": "Next-Lovable v0.0.6 and Earlier", "path": "0.0.6/nextlovable_migration_doc.mdx" }
-          ]
-        }
-      ]
-    },
-    "0.0.7": {
-      "label": "v0.0.7 and later",
-      "navigation": [
-        {
-          "group": "Getting Started",
-          "pages": [
-            { "title": "Next-Lovable v0.0.7+", "path": "0.0.7/nextlovable_migration_doc_v0.0.7.mdx" }
-          ]
-        }
-      ]
-    }
+  "navigation": {
+    "versions": [
+      {
+        "version": "0.0.6",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "0.0.6/index.mdx"
+            ]
+          }
+        ]
+      },
+      {
+        "version": "0.0.7+",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "0.0.7/index.mdx"
+            ]
+          }
+        ]
+      }
+    ]
   },
-  "defaultVersion": "0.0.7"
+  "defaultVersion": "0.0.7+"
 }
