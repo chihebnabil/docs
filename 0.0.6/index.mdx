@@ -1,133 +1,236 @@
 ---
-title: "Next-Lovable v0.0.6 and Earlier"
-version: "0.0.6"
+title: "next-lovable CLI"
+description: "Automatically migrate React applications to Next.js 13+ App Router with intelligent React Router conversion"
+icon: "rocket"
 ---
 
-An intelligent CLI tool to automatically migrate React applications to Next.js 13\+ (App Router), specializing in React Router to App Router conversions.
+<Card title="What is next-lovable?" icon="lightbulb">
+  A smart CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
+</Card>
 
-## Key Features
+## ✨ Key Features
 
-- Smart React Router to Next.js App Router conversion
-- Automated migration from Vite to Next.js build system
-- Intelligent component transformation with `use client` directives
-- Automatic handling of:
-  - Route configurations
-  - Layouts and page structures
-  - Package dependencies
-  - React Helmet to Next.js Metadata
-  - Client/Server component separation
+<CardGroup cols={2}>
+  <Card title="Smart Router Conversion" icon="route">
+    Automatically converts React Router to Next.js App Router
+  </Card>
+  <Card title="Free Single File Testing" icon="file-code">
+    Test individual components without credits or authentication
+  </Card>
+  <Card title="Vite to Next.js Migration" icon="box">
+    Seamlessly migrates from Vite build system to Next.js
+  </Card>
+  <Card title="Intelligent Components" icon="brain">
+    Automatically adds 'use client' directives where needed
+  </Card>
+</CardGroup>
 
-## Prerequisites
+## 🚀 Quick Start
 
-Before using the tool, make sure you have:
+### Prerequisites
 
-- Node.js 18.x or higher
-- npm or yarn installed
-- A [nextlovable.com](https://nextlovable.com) account
-- A React project using:
-  - React Router
-  - Vite
-  - TypeScript (optional but recommended)
+Before you begin, make sure you have:
 
-## Installation
+<Steps>
+  <Step title="Node.js 18.x or higher">
+    Check your version with `node --version`
+  </Step>
+  <Step title="npm or yarn">
+    Your preferred package manager
+  </Step>
+  <Step title="React Router Project">
+    A React application using React Router and Vite
+  </Step>
+  <Step title="nextlovable.com account">
+    Only needed for full project migrations (single file conversion is free\!)
+  </Step>
+</Steps>
 
-To install Next-Lovable globally:
+### Installation
 
 ```bash
 npm install -g next-lovable
 ```
 
-## Authentication
+<Tip>
+  Installing globally allows you to use `next-lovable` from anywhere on your system.
+</Tip>
 
-The tool requires authentication with your nextlovable.com account:
+## 🎯 Usage Guide
 
-- You will be prompted to log in the first time you use it
-- Sessions are stored securely for future use
-- Tokens are refreshed automatically
+### Full Project Migration
 
-## Usage
+<Warning>
+  Full project migration requires a nextlovable.com account and consumes credits. Always test individual files first\!
+</Warning>
 
-### Basic Command
+<Steps>
+  <Step title="Run a Dry Run First">
+    ```bash
+    next-lovable ./my-react-app --dry-run
+    ```
 
-```bash
-next-lovable <source-directory> [target-directory]
+    This shows you exactly what will be changed without making any modifications.
+  </Step>
+  <Step title="Execute the Migration">
+    ```bash
+    next-lovable ./my-react-app ./next-app --yes --install
+    ```
+
+    This creates a new Next.js project and installs dependencies.
+  </Step>
+</Steps>
+
+## 📚 Command Reference (Requires Account)
+
+<ParamField path="source-directory" type="string" required>
+  Path to your React application
+</ParamField>
+
+<ParamField path="target-directory" type="string">
+  Where to create the new Next.js project (optional)
+</ParamField>
+
+<ParamField path="--dry-run, -d" type="boolean">
+  Simulate migration without making changes
+</ParamField>
+
+<ParamField path="--yes, -y" type="boolean">
+  Skip confirmation prompts
+</ParamField>
+
+<ParamField path="--install, -i" type="boolean">
+  Install dependencies after migration
+</ParamField>
+
+## 🔄 What Gets Converted
+
+### React Router → Next.js Router
+
+<CodeGroup>
+
+```tsx Before (React Router)
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
+export const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return (
+    <nav>
+      <Link to="/dashboard">Dashboard</Link>
+      <Link to={`/profile/${userId}`}>Profile</Link>
+      <button onClick={() => navigate('/settings')}>Settings</button>
+      <p>Current: {location.pathname}</p>
+    </nav>
+  );
+};
 ```
 
-### Dry Run Mode (Recommended First Step)
 
-```bash
-next-lovable ./my-react-app --dry-run
+```tsx After (Next.js)
+'use client';
+
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
+export const Navigation = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  return (
+    <nav>
+      <Link href="/dashboard">Dashboard</Link>
+      <Link href={`/profile/${userId}`}>Profile</Link>
+      <button onClick={() => router.push('/settings')}>Settings</button>
+      <p>Current: {pathname}</p>
+    </nav>
+  );
+};
 ```
 
-The `--dry-run` option provides:
+</CodeGroup>
 
-- Complete project analysis
-- Detailed migration report
-- Warnings about potential issues
-- List of files to be modified
-- Preview of transformations
-- No actual changes made
+### React Helmet → Next.js Head
 
-### Full Migration
+<CodeGroup>
 
-```bash
-next-lovable ./my-react-app ./next-app --yes --install
+```tsx Before (React Helmet)
+import { Helmet } from 'react-helmet';
+
+export const PageMeta = ({ title, description }) => (
+  <Helmet>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </Helmet>
+);
 ```
 
-### Available Options
 
-- `-y, --yes`: Skip confirmation prompts
-- `-i, --install`: Install dependencies after migration
-- `-d, --dry-run`: Run in simulation mode without making changes
-- `--help`: Show help information
+```tsx After (Next.js Head)
+import Head from 'next/head';
 
-## Migration Process
+export const PageMeta = ({ title, description }) => (
+  <Head>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </Head>
+);
+```
 
-1. **Authentication & Validation**
-   - Verify your account
-   - Validate the project structure
-   - Check dependencies
-2. **Smart Analysis**
-   - Analyze route structure
-   - Classify components
-   - Detect context providers
-   - Identify client/server boundaries
-3. **Automated Transformations**
-   - Convert React Router to App Router
-   - Create layout structures
-   - Migrate components
-   - Update dependencies
-   - Generate configuration files
-4. **Post-Migration Setup**
-   - Configure Next.js
-   - Adjust TypeScript settings
-   - Prepare the development environment
+</CodeGroup>
 
-## Intelligent Features
 
-- Component analysis for `use client` directives
-- Automatic migration of context providers
-- Preservation and enhancement of layout structures
-- Dependency resolution and cleanup
-- TypeScript support and type preservation
+## 📊 Command Comparison Table
 
-## Post-Migration Steps
+| Task                      | Command                                          | Credits Required | Authentication |
+| ------------------------- | ------------------------------------------------ | ---------------- | -------------- |
+| Preview project migration | `next-lovable migrate ./my-app --dry-run`        | ✅ Yes            | ✅ Yes          |
+| Full project migration    | `next-lovable migrate ./my-app ./next-app`       | ✅ Yes            | ✅ Yes          |
 
-1. Review the generated files in `src/app`
-2. Run `npm run dev` to start the development server
-3. Test your routes
-4. Verify component functionality
+## ⚠️ Important Notes
 
-## Limitations
+<Note>
+  **Version 0.7\+**: Uses new subcommand structure (`migrate`, `convert`)
+
+  **Version 0.6 and earlier**: Uses legacy command format
+</Note>
+
+<Warning>
+  Always backup your original project before running a full migration\!
+</Warning>
+
+<Tip>
+  Start with the free single file conversion to get familiar with the tool before migrating entire projects.
+</Tip>
+
+## 🐛 Limitations & Best Practices
+
+### Known Limitations
 
 - Complex custom route configurations may need manual adjustments
-- Dynamic route parameters may require review
+- Dynamic route parameters might require review
 - Some third-party integrations may need updates
-- Complex state management setups may need fine-tuning
+- Complex state management setups might need fine-tuning
 
-## Best Practices
+### Best Practices
 
-1. Always run `--dry-run` first
-2. Keep a backup of your original project
-3. Review generated files before deployment
-4. Test thoroughly after migration
+1. **Always test individual files first** using the free `convert` command
+2. **`Run --dry-run`** before any actual migration
+3. **Keep backups** of your original project
+4. **Review generated files** before deployment
+5. **Test thoroughly** after migration
+
+## 🆘 Getting Help
+
+<CardGroup cols={2}>
+  <Card title="List Available Commands" icon="terminal">
+    ```bash
+    next-lovable --help
+    ```
+  </Card>
+</CardGroup>
+
+---
+
+Ready to migrate your React app to Next.js? Start with a simple file conversion to see the magic in action\! 🚀
