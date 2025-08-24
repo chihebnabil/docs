@@ -1,97 +1,134 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: Next-Lovable v0.0.6 and Earlier
+version: 0.0.6
 ---
 
-## Setting up
+An intelligent CLI tool to automatically migrate React applications to Next.js 13+ (App Router), specializing in React Router to App Router conversions.
 
-Get your documentation site up and running in minutes.
+## Key Features
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+- Smart React Router to Next.js App Router conversion
+- Automated migration from Vite to Next.js build system
+- Intelligent component transformation with `use client` directives
+- Automatic handling of:
+  - Route configurations
+  - Layouts and page structures
+  - Package dependencies
+  - React Helmet to Next.js Metadata
+  - Client/Server component separation
 
-## Make it yours
+## Prerequisites
 
-Design a docs site that looks great and empowers your users.
+Before using the tool, make sure you have:
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+- Node.js 18.x or higher
+- npm or yarn installed
+- A [nextlovable.com](https://nextlovable.com) account
+- A React project using:
+  - React Router
+  - Vite
+  - TypeScript (optional but recommended)
 
-## Create beautiful pages
+## Installation
 
-Everything you need to create world-class documentation.
+To install Next-Lovable globally:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+```bash
+npm install -g next-lovable
+```
 
-## Need inspiration?
+## Authentication
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+The tool requires authentication with your nextlovable.com account:
+- You will be prompted to log in the first time you use it
+- Sessions are stored securely for future use
+- Tokens are refreshed automatically
+
+## Usage
+
+### Basic Command
+
+```bash
+next-lovable <source-directory> [target-directory]
+```
+
+### Dry Run Mode (Recommended First Step)
+
+```bash
+next-lovable ./my-react-app --dry-run
+```
+
+The `--dry-run` option provides:
+- Complete project analysis
+- Detailed migration report
+- Warnings about potential issues
+- List of files to be modified
+- Preview of transformations
+- No actual changes made
+
+### Full Migration
+
+```bash
+next-lovable ./my-react-app ./next-app --yes --install
+```
+
+### Available Options
+
+- `-y, --yes`: Skip confirmation prompts
+- `-i, --install`: Install dependencies after migration
+- `-d, --dry-run`: Run in simulation mode without making changes
+- `--help`: Show help information
+
+## Migration Process
+
+1. **Authentication & Validation**
+   - Verify your account
+   - Validate the project structure
+   - Check dependencies
+
+2. **Smart Analysis**
+   - Analyze route structure
+   - Classify components
+   - Detect context providers
+   - Identify client/server boundaries
+
+3. **Automated Transformations**
+   - Convert React Router to App Router
+   - Create layout structures
+   - Migrate components
+   - Update dependencies
+   - Generate configuration files
+
+4. **Post-Migration Setup**
+   - Configure Next.js
+   - Adjust TypeScript settings
+   - Prepare the development environment
+
+## Intelligent Features
+
+- Component analysis for `use client` directives
+- Automatic migration of context providers
+- Preservation and enhancement of layout structures
+- Dependency resolution and cleanup
+- TypeScript support and type preservation
+
+## Post-Migration Steps
+
+1. Review the generated files in `src/app`
+2. Run `npm run dev` to start the development server
+3. Test your routes
+4. Verify component functionality
+
+## Limitations
+
+- Complex custom route configurations may need manual adjustments
+- Dynamic route parameters may require review
+- Some third-party integrations may need updates
+- Complex state management setups may need fine-tuning
+
+## Best Practices
+
+1. Always run `--dry-run` first
+2. Keep a backup of your original project
+3. Review generated files before deployment
+4. Test thoroughly after migration
