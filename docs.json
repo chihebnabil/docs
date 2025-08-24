@@ -20,7 +20,7 @@
           {
             "group": "Getting Started",
             "pages": [
-              "0.0.6/index.mdx"
+              "index.mdx"
             ]
           }
         ]
@@ -31,7 +31,7 @@
           {
             "group": "Getting Started",
             "pages": [
-              "0.0.7/index.mdx"
+              "index.mdx"
             ]
           }
         ]
