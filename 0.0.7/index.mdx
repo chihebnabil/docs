@@ -8,7 +8,7 @@ icon: "rocket"
   A smart CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
 </Card>
 
-## ✨ Key Features
+## Key Features
 
 <CardGroup cols={2}>
   <Card title="Smart Router Conversion" icon="route">
@@ -25,136 +25,116 @@ icon: "rocket"
   </Card>
 </CardGroup>
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-Before you begin, make sure you have:
+## Get Started in 2 Minutes
 
 <Steps>
-  <Step title="Node.js 18.x or higher">
-    Check your version with `node --version`
+  <Step title="Install globally">
+    ```bash
+    npm install -g next-lovable
+    ```
   </Step>
-  <Step title="npm or yarn">
-    Your preferred package manager
+  <Step title="Try your first conversion (free!)">
+    ```bash
+    next-lovable convert MyComponent.tsx --dry-run --show-diff
+    ```
   </Step>
-  <Step title="React Router Project">
-    A React application using React Router and Vite
-  </Step>
-  <Step title="nextlovable.com account">
-    Only needed for full project migrations (single file conversion is free\!)
+  <Step title="Apply the conversion">
+    ```bash
+    next-lovable convert MyComponent.tsx
+    ```
   </Step>
 </Steps>
 
-### Installation
+<Info>
+  **No account needed** for single file conversions! Perfect for testing and learning.
+</Info>
 
-```bash
-npm install -g next-lovable
-```
+## Documentation
 
-<Tip>
-  Installing globally allows you to use `next-lovable` from anywhere on your system.
-</Tip>
+<CardGroup cols={3}>
+  <Card title="Installation Guide" href="/0.0.7/installation" icon="download">
+    System requirements and setup instructions
+  </Card>
+  <Card title="Quick Start" href="/0.0.7/quick-start" icon="play">
+    Your first conversion in 5 minutes
+  </Card>
+  <Card title="Convert Command" href="/0.0.7/commands/convert" icon="file-arrow-right">
+    Free file conversion (no auth required)
+  </Card>
+  <Card title="Migrate Command" href="/0.0.7/commands/migrate" icon="folder-arrow-right">
+    Full project migration (requires account)
+  </Card>
+  <Card title="Troubleshooting" href="/0.0.7/guides/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+  <Card title="Best Practices" href="/0.0.7/guides/best-practices" icon="star">
+    Tips for successful migrations
+  </Card>
+</CardGroup>
 
-## 🎯 Usage Guide
+## What You Can Do
 
-### Testing Individual Files (Free & No Auth Required)
+### Free Features (No Auth Required)
 
-Perfect for beginners\! Test how your components will be converted without using credits or signing up.
+<CardGroup cols={2}>
+  <Card title="Single File Conversion" icon="file">
+    Convert individual React files to Next.js format
+  </Card>
+  <Card title="Preview Changes" icon="eye">
+    See exactly what will change before applying
+  </Card>
+</CardGroup>
 
-<CodeGroup>
+### Premium Features (Account Required)
 
-```bash Basic Conversion
-# Convert a single component file
-next-lovable convert MyComponent.tsx
-```
+<CardGroup cols={2}>
+  <Card title="Full Project Migration" icon="folder">
+    Convert entire React applications to Next.js
+  </Card>
+  <Card title="Batch Processing" icon="layers">
+    Convert multiple files and directories at once
+  </Card>
+</CardGroup>
 
+## What Gets Converted
 
-```bash Preview Changes
-# See what changes will be made without modifying the file
-next-lovable convert MyComponent.tsx --dry-run --show-diff
-```
+<AccordionGroup>
+  <Accordion title="React Router → Next.js Navigation">
+    - `useNavigate()` → `useRouter()` from `next/navigation`
+    - `<Link to="/path">` → `<Link href="/path">` from `next/link`
+    - `useLocation()` → `usePathname()` \+ `useSearchParams()`
+    - `useParams()` → Next.js `useParams()`
+  </Accordion>
+  
+  <Accordion title="React Helmet → Next.js Head">
+    - `<Helmet>` → `<Head>` from `next/head`
+    - Meta tags and title preservation
+    - SEO attributes maintained
+  </Accordion>
+  
+  <Accordion title="Client Component Detection">
+    - Automatic "use client" directive addition
+    - Detects React hooks, event handlers, browser APIs
+    - Maintains server/client component boundaries
+  </Accordion>
+  
+  <Accordion title="Context Provider Migration">
+    - Converts React Context providers
+    - Maintains context functionality in Next.js structure
+    - Preserves type safety
+  </Accordion>
+</AccordionGroup>
 
+## � Quick Command Reference
 
-```bash Save to Different Location
-# Convert and save to a new location
-next-lovable convert MyComponent.tsx --output ./converted/MyComponent.tsx
-```
+| Task | Command | Credits | Auth |
+|------|---------|---------|------|
+| Test conversion | `next-lovable convert file.tsx --dry-run` | ❌ Free | ❌ No |
+| Convert file | `next-lovable convert file.tsx` | ❌ Free | ❌ No |
+| Preview migration | `next-lovable migrate ./app --dry-run` | ✅ Yes | ✅ Yes |
+| Full migration | `next-lovable migrate ./app ./next-app` | ✅ Yes | ✅ Yes |
 
-</CodeGroup>
-
-### Full Project Migration
-
-<Warning>
-  Full project migration requires a nextlovable.com account and consumes credits. Always test individual files first\!
-</Warning>
-
-<Steps>
-  <Step title="Run a Dry Run First">
-    ```bash
-    next-lovable migrate ./my-react-app --dry-run
-    ```
-
-    This shows you exactly what will be changed without making any modifications.
-  </Step>
-  <Step title="Execute the Migration">
-    ```bash
-    next-lovable migrate ./my-react-app ./next-app --yes --install
-    ```
-
-    This creates a new Next.js project and installs dependencies.
-  </Step>
-</Steps>
-
-## 📚 Command Reference
-
-### Convert Command (Free)
-
-<ParamField path="file" type="string" required>
-  The React file you want to convert
-</ParamField>
-
-<ParamField path="--output, -o" type="string">
-  Output file path (default: overwrites input file)
-</ParamField>
-
-<ParamField path="--transform, -t" type="string">
-  Comma-separated transformations: `router`, `helmet`, `client`, `context`, `all`
-</ParamField>
-
-<ParamField path="--dry-run, -d" type="boolean">
-  Preview changes without modifying files
-</ParamField>
-
-<ParamField path="--show-diff" type="boolean">
-  Show before/after comparison (use with --dry-run)
-</ParamField>
-
-### Migrate Command (Requires Account)
-
-<ParamField path="source-directory" type="string" required>
-  Path to your React application
-</ParamField>
-
-<ParamField path="target-directory" type="string">
-  Where to create the new Next.js project (optional)
-</ParamField>
-
-<ParamField path="--dry-run, -d" type="boolean">
-  Simulate migration without making changes
-</ParamField>
-
-<ParamField path="--yes, -y" type="boolean">
-  Skip confirmation prompts
-</ParamField>
-
-<ParamField path="--install, -i" type="boolean">
-  Install dependencies after migration
-</ParamField>
-
-## 🔄 What Gets Converted
-
-### React Router → Next.js Router
+## Real-World Example
 
 <CodeGroup>
 
@@ -168,14 +148,12 @@ export const Navigation = () => {
   return (
     <nav>
       <Link to="/dashboard">Dashboard</Link>
-      <Link to={`/profile/${userId}`}>Profile</Link>
       <button onClick={() => navigate('/settings')}>Settings</button>
       <p>Current: {location.pathname}</p>
     </nav>
   );
 };
 ```
-
 
 ```tsx After (Next.js)
 'use client';
@@ -190,7 +168,6 @@ export const Navigation = () => {
   return (
     <nav>
       <Link href="/dashboard">Dashboard</Link>
-      <Link href={`/profile/${userId}`}>Profile</Link>
       <button onClick={() => router.push('/settings')}>Settings</button>
       <p>Current: {pathname}</p>
     </nav>
@@ -200,154 +177,25 @@ export const Navigation = () => {
 
 </CodeGroup>
 
-### React Helmet → Next.js Head
-
-<CodeGroup>
-
-```tsx Before (React Helmet)
-import { Helmet } from 'react-helmet';
-
-export const PageMeta = ({ title, description }) => (
-  <Helmet>
-    <title>{title}</title>
-    <meta name="description" content={description} />
-  </Helmet>
-);
-```
-
-
-```tsx After (Next.js Head)
-import Head from 'next/head';
-
-export const PageMeta = ({ title, description }) => (
-  <Head>
-    <title>{title}</title>
-    <meta name="description" content={description} />
-  </Head>
-);
-```
-
-</CodeGroup>
-
-## 🎛️ Available Transformations
-
-<AccordionGroup>
-  <Accordion title="router - React Router Conversion">
-    - `useNavigate()` → `useRouter()` from `next/navigation`
-    - `<Link to="/path">` → `<Link href="/path">` from `next/link`
-    - `useLocation()` → `usePathname()` \+ `useSearchParams()`
-    - `useParams()` → Next.js `useParams()`
-    - Template literals in paths are preserved
-  </Accordion>
-  <Accordion title="helmet - React Helmet Conversion">
-    - `<Helmet>` → `<Head>` from `next/head`
-    - Meta tags and title preservation
-    - SEO attributes maintained
-  </Accordion>
-  <Accordion title="client - Client Component Detection">
-    - Automatic "use client" directive addition
-    - Detects React hooks (useState, useEffect, etc.)
-    - Identifies event handlers (onClick, onChange, etc.)
-    - Recognizes browser APIs (window, document, localStorage)
-  </Accordion>
-  <Accordion title="context - Context Provider Migration">
-    - Converts React Context providers
-    - Maintains context functionality in Next.js structure
-  </Accordion>
-</AccordionGroup>
-
-## 📖 Beginner's Workflow
-
-<Steps>
-  <Step title="Start Small">
-    Test individual components first to understand what changes:
-
-    ```bash
-    next-lovable convert src/components/Header.tsx --dry-run --show-diff
-    ```
-  </Step>
-  <Step title="Convert Key Files">
-    Convert your main routing components:
-
-    ```bash
-    next-lovable convert src/App.tsx --dry-run
-    next-lovable convert src/components/Navigation.tsx --dry-run
-    ```
-  </Step>
-  <Step title="Preview Full Migration">
-    See what a full project migration would look like:
-
-    ```bash
-    next-lovable migrate ./my-react-app --dry-run
-    ```
-  </Step>
-  <Step title="Execute Migration">
-    When you're ready, run the full migration:
-
-    ```bash
-    next-lovable migrate ./my-react-app ./my-next-app --install
-    ```
-  </Step>
-</Steps>
-
-## 📊 Command Comparison Table
-
-| Task                      | Command                                          | Credits Required | Authentication |
-| ------------------------- | ------------------------------------------------ | ---------------- | -------------- |
-| List transformations      | `next-lovable convert --list`                    | ❌ No             | ❌ No           |
-| Test single file          | `next-lovable convert MyComponent.tsx --dry-run` | ❌ No             | ❌ No           |
-| Convert single file       | `next-lovable convert MyComponent.tsx`           | ❌ No             | ❌ No           |
-| Preview project migration | `next-lovable migrate ./my-app --dry-run`        | ✅ Yes            | ✅ Yes          |
-| Full project migration    | `next-lovable migrate ./my-app ./next-app`       | ✅ Yes            | ✅ Yes          |
-
-## ⚠️ Important Notes
-
-<Note>
-  **Version 0.6\+**: Uses new subcommand structure (`migrate`, `convert`)
-
-  **Version 0.5 and earlier**: Uses legacy command format
-</Note>
+## Important Notes
 
 <Warning>
-  Always backup your original project before running a full migration\!
+  **Version 0.7\+**: Uses new subcommand structure (`convert`, `migrate`)
+  
+  **Version 0.6 and earlier**: Uses legacy command format
 </Warning>
 
 <Tip>
-  Start with the free single file conversion to get familiar with the tool before migrating entire projects.
+  Start with the free `convert` command to get familiar with the tool before migrating entire projects.
 </Tip>
 
-## 🐛 Limitations & Best Practices
+## Need Help?
 
-### Known Limitations
-
-- Complex custom route configurations may need manual adjustments
-- Dynamic route parameters might require review
-- Some third-party integrations may need updates
-- Complex state management setups might need fine-tuning
-
-### Best Practices
-
-1. **Always test individual files first** using the free `convert` command
-2. **`Run --dry-run`** before any actual migration
-3. **Keep backups** of your original project
-4. **Review generated files** before deployment
-5. **Test thoroughly** after migration
-
-## 🆘 Getting Help
-
-<CardGroup cols={2}>
-  <Card title="List Available Commands" icon="terminal">
-    ```bash
-    next-lovable --help
-    ```
-  </Card>
-  <Card title="List Transformations" icon="list">
-    ```bash
-    next-lovable convert --list
-    ```
+<CardGroup>
+  <Card title="Done for you" href="https://nextlovable.com/done-for-you" icon="github">
+    We'll convert your beautiful Lovable app into a lightning-fast, SEO-ready website that actually shows up in search results. No coding required.
   </Card>
 </CardGroup>
-
 ---
 
-Ready to migrate your React app to Next.js? Start with a simple file conversion to see the magic in action\! 🚀
+Ready to migrate your React app to Next.js? [Start with a quick conversion →](/0.0.7/quick-start)

@@ -1,0 +1,279 @@
+---
+title: "Quick Start"
+description: "Get up and running with next-lovable 0.0.6 in 5 minutes"
+icon: "play"
+---
+
+<Info>
+  **Version 0.0.6**: This version requires authentication for all operations. Consider upgrading to 0.0.7+ for free single file conversions.
+</Info>
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+<Steps>
+  <Step title="Valid Account">
+    Create an account at [nextlovable.com](https://nextlovable.com)
+  </Step>
+</Steps>
+
+## Your First Migration
+
+Let's start with migrating a simple React project:
+
+### Step 1: Prepare Your React Project
+
+Make sure you have a React project with React Router. Here's a sample structure:
+
+```bash
+my-react-app/
+├── src/
+│   ├── App.tsx
+│   ├── components/
+│   │   └── Navigation.tsx
+│   └── pages/
+│       ├── Home.tsx
+│       └── About.tsx
+├── package.json
+└── vite.config.js
+```
+
+### Step 2: Preview the Migration (Dry Run)
+
+See what changes will be made without modifying anything:
+
+```bash
+next-lovable ./my-react-app --dry-run
+```
+
+<Details>
+  <summary>Expected output</summary>
+  
+  You'll see a summary of:
+  - Files that will be converted
+  - React Router patterns found
+  - Components that need 'use client' directives
+  - New Next.js file structure
+</Details>
+
+### Step 3: Execute the Migration
+
+Run the actual migration:
+
+```bash
+next-lovable ./my-react-app ./my-next-app --yes --install
+```
+
+This will:
+- Create a new Next.js project in `./my-next-app`
+- Convert React Router to Next.js App Router
+- Add 'use client' directives where needed
+- Install all dependencies
+- Set up the proper Next.js configuration
+
+### Step 4: Review and Test
+
+<Steps>
+  <Step title="Navigate to the new project">
+    ```bash
+    cd my-next-app
+    ```
+  </Step>
+  <Step title="Start the development server">
+    ```bash
+    npm run dev
+    ```
+  </Step>
+  <Step title="Open in browser">
+    Visit http://localhost:3000 to see your migrated app
+  </Step>
+</Steps>
+
+## Command Structure (v0.0.6)
+
+Version 0.0.6 uses a simpler command structure:
+
+<CodeGroup>
+
+```bash Basic Migration
+next-lovable <source-directory> [target-directory]
+```
+
+```bash With Options
+next-lovable ./my-app ./next-app --dry-run --yes --install
+```
+
+</CodeGroup>
+
+### Available Options
+
+<ParamField path="source-directory" type="string" required>
+  Path to your React application
+</ParamField>
+
+<ParamField path="target-directory" type="string">
+  Where to create the new Next.js project (optional)
+</ParamField>
+
+<ParamField path="--dry-run, -d" type="boolean">
+  Simulate migration without making changes
+</ParamField>
+
+<ParamField path="--yes, -y" type="boolean">
+  Skip confirmation prompts
+</ParamField>
+
+<ParamField path="--install, -i" type="boolean">
+  Install dependencies after migration
+</ParamField>
+
+## What Gets Converted
+
+<AccordionGroup>
+  <Accordion title="React Router → Next.js Navigation">
+    - `useNavigate()` → `useRouter()`
+    - `<Link to="">` → `<Link href="">`
+    - `useLocation()` → `usePathname()`
+    - Route structure converted to App Router
+  </Accordion>
+  
+  <Accordion title="Component Structure">
+    - Automatic 'use client' directive addition
+    - Page components moved to app directory
+    - Layout components properly structured
+  </Accordion>
+  
+  <Accordion title="Build Configuration">
+    - Vite config → Next.js config
+    - Package.json scripts updated
+    - Dependencies migrated
+  </Accordion>
+</AccordionGroup>
+
+## Example Migration
+
+<CodeGroup>
+
+```tsx Before (React Router)
+// src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+```tsx After (Next.js App Router)
+// app/layout.tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+// app/page.tsx
+export default function Home() {
+  return <div>Home Page</div>;
+}
+
+// app/about/page.tsx
+export default function About() {
+  return <div>About Page</div>;
+}
+```
+
+</CodeGroup>
+
+## Limitations in v0.0.6
+
+<Warning>
+  **Version 0.0.6 Limitations**:
+  - Requires authentication for all operations
+  - No single file conversion mode
+  - Limited transformation options
+  - No granular control over conversions
+</Warning>
+
+## Upgrade Benefits
+
+Consider upgrading to version 0.0.7+ for:
+
+<CardGroup cols={2}>
+  <Card title="Free Features" icon="gift">
+    Single file conversions without authentication
+  </Card>
+  <Card title="Better Control" icon="sliders">
+    Granular transformation options
+  </Card>
+  <Card title="Improved CLI" icon="terminal">
+    Subcommand structure (convert, migrate)
+  </Card>
+  <Card title="Enhanced Performance" icon="gauge-high">
+    Faster processing and better error handling
+  </Card>
+</CardGroup>
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="Migration Incomplete">
+    1. Check source directory permissions
+    2. Ensure target directory is writable
+    3. Verify sufficient disk space
+    4. Review error messages for specific issues
+  </Accordion>
+  
+  <Accordion title="Generated App Won't Start">
+    1. Run `npm install` in the target directory
+    2. Check for TypeScript errors
+    3. Review Next.js configuration
+    4. Clear Next.js cache: `rm -rf .next`
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<Steps>
+  <Step title="Explore the Generated Code">
+    Review how your React components were converted
+  </Step>
+  <Step title="Test All Routes">
+    Navigate through your app to ensure everything works
+  </Step>
+  <Step title="Deploy">
+    Deploy your new Next.js app to your preferred platform
+  </Step>
+  <Step title="Consider Upgrading">
+    Upgrade to version 0.0.7+ for enhanced features
+  </Step>
+</Steps>
+
+<CardGroup cols={3}>
+  <Card title="Migration Command" href="/0.0.6/commands/migrate" icon="terminal">
+    Detailed CLI documentation
+  </Card>
+  <Card title="Troubleshooting" href="/0.0.6/guides/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+  <Card title="Version 0.0.7+" href="/0.0.7" icon="arrow-up">
+    Upgrade for more features
+  </Card>
+</CardGroup>

@@ -1,0 +1,173 @@
+---
+title: "Quick Start"
+description: "Get up and running with next-lovable in 5 minutes"
+icon: "play"
+---
+
+<Info>
+  **New to next-lovable?** This guide will walk you through your first conversion in just a few minutes.
+</Info>
+
+## Your First File Conversion (Free)
+
+Let's start with converting a single React component - no account needed!
+
+### Step 1: Create a Sample Component
+
+Create a file called `Navigation.tsx`:
+
+```tsx Navigation.tsx
+import React from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
+export const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogout = () => {
+    navigate('/login');
+  };
+
+  return (
+    <nav className="navbar">
+      <Link to="/" className="nav-link">Home</Link>
+      <Link to="/about" className="nav-link">About</Link>
+      <Link to="/contact" className="nav-link">Contact</Link>
+      <button onClick={handleLogout}>Logout</button>
+      <span>Current path: {location.pathname}</span>
+    </nav>
+  );
+};
+```
+
+### Step 2: Preview the Conversion
+
+See what changes will be made without modifying the file:
+
+```bash
+next-lovable convert Navigation.tsx --dry-run --show-diff
+```
+
+<Details>
+  <summary>Expected output</summary>
+  
+  You'll see a diff showing:
+  - React Router imports → Next.js imports
+  - `useNavigate()` → `useRouter()`
+  - `useLocation()` → `usePathname()`
+  - `<Link to="">` → `<Link href="">`
+  - Addition of `'use client'` directive
+</Details>
+
+### Step 3: Apply the Conversion
+
+Convert the file:
+
+```bash
+next-lovable convert Navigation.tsx
+```
+
+### Step 4: Review the Result
+
+Your file is now converted to Next.js format! Open `Navigation.tsx` to see the changes.
+
+<CodeGroup>
+
+```tsx Before
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
+export const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  // ... rest of component
+```
+
+```tsx After
+'use client';
+
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
+export const Navigation = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  // ... rest of component
+```
+
+</CodeGroup>
+
+## Common Patterns
+
+### Testing Multiple Files
+
+You can test several files at once:
+
+```bash
+# Test all components in a directory
+next-lovable convert src/components/*.tsx --dry-run
+
+# Test specific transformation types only
+next-lovable convert MyComponent.tsx --transform router,client --dry-run
+```
+
+### Saving to Different Location
+
+Keep your original files intact:
+
+```bash
+next-lovable convert src/Navigation.tsx --output converted/Navigation.tsx
+```
+
+### Available Transformations
+
+<CardGroup cols={2}>
+  <Card title="router" icon="route">
+    React Router → Next.js navigation
+  </Card>
+  <Card title="helmet" icon="helmet-safety">
+    React Helmet → Next.js Head
+  </Card>
+  <Card title="client" icon="cursor-click">
+    Auto-detect client components
+  </Card>
+  <Card title="context" icon="sitemap">
+    React Context migration
+  </Card>
+</CardGroup>
+
+List all available transformations:
+```bash
+next-lovable convert --list
+```
+
+## What's Next?
+
+<Steps>
+  <Step title="Try More Components">
+    Convert other components in your React app to get familiar with the tool
+  </Step>
+  <Step title="Learn About Full Migration">
+    Ready for a complete project migration? Check out our [migration guide](/0.0.7/commands/migrate)
+  </Step>
+  <Step title="Explore Examples">
+    See more [real-world examples](/0.0.7/examples/basic-conversion)
+  </Step>
+</Steps>
+
+<Warning>
+  **Important**: Always backup your code before running conversions, especially when working with important files!
+</Warning>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Command Reference" href="/0.0.7/commands/convert" icon="terminal">
+    Detailed CLI documentation
+  </Card>
+  <Card title="Troubleshooting" href="/0.0.7/guides/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+  <Card title="Best Practices" href="/0.0.7/guides/best-practices" icon="star">
+    Tips for successful migrations
+  </Card>
+</CardGroup>

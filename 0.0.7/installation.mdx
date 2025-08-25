@@ -1,0 +1,134 @@
+---
+title: "Installation"
+description: "How to install and set up next-lovable CLI"
+icon: "download"
+---
+
+## System Requirements
+
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node-js">
+    Version 18.x or higher
+  </Card>
+  <Card title="Package Manager" icon="box">
+    npm, yarn, or pnpm
+  </Card>
+</CardGroup>
+
+## Installation Methods
+
+### Global Installation (Recommended)
+
+Install next-lovable globally to use it from anywhere:
+
+<CodeGroup>
+
+```bash npm
+npm install -g next-lovable
+```
+
+```bash yarn
+yarn global add next-lovable
+```
+
+```bash pnpm
+pnpm add -g next-lovable
+```
+
+</CodeGroup>
+
+<Note>
+  Global installation allows you to run `next-lovable` from any directory on your system.
+</Note>
+
+## Verify Installation
+
+Check if next-lovable is installed correctly:
+
+```bash
+next-lovable --version
+```
+
+You should see the version number displayed.
+
+## Account Setup (For Full Migrations)
+
+<Steps>
+  <Step title="Visit nextlovable.com">
+    Go to [nextlovable.com](https://nextlovable.com) and create an account
+  </Step>
+</Steps>
+
+<Info>
+  **Free Tier Available**: Single file conversions don't require an account or API key. Only full project migrations require authentication.
+</Info>
+
+## Updating
+
+To update to the latest version:
+
+<CodeGroup>
+
+```bash npm
+npm update -g next-lovable
+```
+
+```bash yarn
+yarn global upgrade next-lovable
+```
+
+```bash pnpm
+pnpm update -g next-lovable
+```
+
+</CodeGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Permission Denied Error">
+    If you get permission errors on macOS/Linux, try:
+    ```bash
+    sudo npm install -g next-lovable
+    ```
+    
+    Or better yet, configure npm to use a different directory:
+    ```bash
+    mkdir ~/.npm-global
+    npm config set prefix '~/.npm-global'
+    echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+  </Accordion>
+  
+  <Accordion title="Command Not Found">
+    If `next-lovable` command is not found after installation:
+    
+    1. Restart your terminal
+    2. Check if the npm global bin directory is in your PATH:
+       ```bash
+       npm config get prefix
+       echo $PATH
+       ```
+    3. Add npm global bin to your PATH if missing
+  </Accordion>
+  
+  <Accordion title="Node.js Version Issues">
+    If you encounter Node.js version compatibility issues:
+    
+    1. Check your Node.js version: `node --version`
+    2. Update Node.js to 18.x or higher
+    3. Consider using a Node.js version manager like nvm
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Quick Start Guide" href="/0.0.7/quick-start" icon="rocket">
+    Learn the basics with a simple example
+  </Card>
+  <Card title="Convert Your First File" href="/0.0.7/commands/convert" icon="file-code">
+    Try the free file conversion feature
+  </Card>
+</CardGroup>

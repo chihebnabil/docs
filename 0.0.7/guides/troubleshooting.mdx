@@ -1,0 +1,459 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions when using next-lovable"
+icon: "wrench"
+---
+
+## Common Issues
+
+### Installation Problems
+
+<AccordionGroup>
+  <Accordion title="Command not found: next-lovable">
+    **Problem**: After installation, running `next-lovable` shows "command not found"
+    
+    **Solutions**:
+    
+    1. **Restart your terminal** - This refreshes the PATH
+    
+    2. **Check if npm global bin is in PATH**:
+       ```bash
+       npm config get prefix
+       echo $PATH
+       ```
+       The npm prefix path should be in your PATH
+    
+    3. **Add npm global bin to PATH** (if missing):
+       ```bash
+       # For bash/zsh
+       echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
+       source ~/.bashrc
+       
+       # For fish shell
+       set -U fish_user_paths (npm config get prefix)/bin $fish_user_paths
+       ```
+    
+    4. **Use npx as alternative**:
+       ```bash
+       npx next-lovable convert MyComponent.tsx
+       ```
+  </Accordion>
+  
+  <Accordion title="Permission denied errors">
+    **Problem**: Getting permission errors during global installation
+    
+    **Solutions**:
+    
+    1. **Configure npm to use a different directory** (recommended):
+       ```bash
+       mkdir ~/.npm-global
+       npm config set prefix '~/.npm-global'
+       echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+       source ~/.bashrc
+       npm install -g next-lovable
+       ```
+    
+    2. **Use sudo** (less secure):
+       ```bash
+       sudo npm install -g next-lovable
+       ```
+    
+    3. **Use a Node.js version manager** like nvm, which handles permissions better
+  </Accordion>
+  
+  <Accordion title="Node.js version incompatibility">
+    **Problem**: Errors about Node.js version being too old
+    
+    **Solutions**:
+    
+    1. **Check your Node.js version**:
+       ```bash
+       node --version
+       ```
+       You need 18.x or higher
+    
+    2. **Update Node.js**:
+       - Visit [nodejs.org](https://nodejs.org/) for official installer
+       - Or use a version manager like nvm:
+         ```bash
+         nvm install node  # installs latest
+         nvm use node
+         ```
+    
+    3. **For Ubuntu/Debian**:
+       ```bash
+       curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+       sudo apt-get install -y nodejs
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Conversion Issues
+
+<AccordionGroup>
+  <Accordion title="File not found or cannot read file">
+    **Problem**: Error reading the file you're trying to convert
+    
+    **Solutions**:
+    
+    1. **Check file path is correct**:
+       ```bash
+       ls -la src/components/MyComponent.tsx
+       ```
+    
+    2. **Use absolute path**:
+       ```bash
+       next-lovable convert /full/path/to/MyComponent.tsx
+       ```
+    
+    3. **Check file permissions**:
+       ```bash
+       chmod 644 MyComponent.tsx
+       ```
+    
+    4. **Make sure file extension is supported**:
+       - Supported: `.tsx`, `.ts`, `.jsx`, `.js`
+       - Not supported: `.vue`, `.svelte`, etc.
+  </Accordion>
+  
+  <Accordion title="Syntax error in component">
+    **Problem**: Tool reports syntax errors in your React component
+    
+    **Solutions**:
+    
+    1. **Fix syntax errors first**:
+       ```bash
+       # Use your editor's linter or
+       npx tsc --noEmit MyComponent.tsx  # for TypeScript
+       npx eslint MyComponent.tsx        # for ESLint
+       ```
+    
+    2. **Check for unsupported syntax**:
+       - Experimental JavaScript features
+       - Non-standard JSX patterns
+       - Mixing TypeScript and JavaScript incorrectly
+    
+    3. **Simplify complex patterns**:
+       - Extract complex logic to separate functions
+       - Break down large components
+       - Remove experimental decorators
+  </Accordion>
+  
+  <Accordion title="Conversion results look wrong">
+    **Problem**: The converted code doesn't work as expected
+    
+    **Solutions**:
+    
+    1. **Use dry-run first to preview**:
+       ```bash
+       next-lovable convert MyComponent.tsx --dry-run --show-diff
+       ```
+    
+    2. **Apply transformations incrementally**:
+       ```bash
+       # Test each transformation separately
+       next-lovable convert MyComponent.tsx --transform router --dry-run
+       next-lovable convert MyComponent.tsx --transform client --dry-run
+       ```
+    
+    3. **Check for complex routing patterns**:
+       - Dynamic routes with complex parameters
+       - Nested routing with custom logic
+       - Route guards and middleware
+    
+    4. **Manual review needed for**:
+       - Custom hooks that depend on React Router internals
+       - Complex state management patterns
+       - Third-party library integrations
+  </Accordion>
+  
+  <Accordion title="'use client' directive not added when needed">
+    **Problem**: Component uses client-side features but no directive was added
+    
+    **Solutions**:
+    
+    1. **Manually apply client transformation**:
+       ```bash
+       next-lovable convert MyComponent.tsx --transform client
+       ```
+    
+    2. **Check for these patterns that need 'use client'**:
+       - React hooks (`useState`, `useEffect`, etc.)
+       - Event handlers (`onClick`, `onChange`, etc.)
+       - Browser APIs (`window`, `document`, `localStorage`)
+       - Third-party client libraries
+    
+    3. **Add manually if needed**:
+       ```tsx
+       'use client';
+       
+       import React from 'react';
+       // rest of component
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Migration Issues
+
+<AccordionGroup>
+  <Accordion title="Authentication failed">
+    **Problem**: Cannot authenticate for full project migration
+    
+    **Solutions**:
+    
+    1. **Check your API key**:
+       ```bash
+       next-lovable auth --check
+       ```
+    
+    2. **Re-authenticate**:
+       ```bash
+       next-lovable auth
+       ```
+       Enter your API key from nextlovable.com dashboard
+    
+    3. **Verify account status**:
+       - Log into nextlovable.com
+       - Check if your account is active
+       - Verify you have credits remaining
+    
+    4. **Check network connection**:
+       ```bash
+       curl -I https://api.nextlovable.com/health
+       ```
+  </Accordion>
+  
+  <Accordion title="Migration fails partway through">
+    **Problem**: Full project migration stops with errors
+    
+    **Solutions**:
+    
+    1. **Use dry-run first**:
+       ```bash
+       next-lovable migrate ./my-app --dry-run
+       ```
+       This identifies issues before making changes
+    
+    2. **Check for blocking issues**:
+       - Syntax errors in source files
+       - Permission issues with target directory
+       - Insufficient disk space
+       - Network connectivity issues
+    
+    3. **Try incremental approach**:
+       ```bash
+       # Convert critical files individually first
+       next-lovable convert src/App.tsx
+       next-lovable convert src/components/Navigation.tsx
+       # Then run migration
+       ```
+    
+    4. **Clean up and retry**:
+       ```bash
+       rm -rf target-directory
+       next-lovable migrate ./my-app ./clean-target --yes
+       ```
+  </Accordion>
+  
+  <Accordion title="Generated Next.js project won't start">
+    **Problem**: The migrated project has errors when running `npm run dev`
+    
+    **Solutions**:
+    
+    1. **Install dependencies**:
+       ```bash
+       cd migrated-project
+       npm install
+       # or
+       yarn install
+       ```
+    
+    2. **Check Next.js configuration**:
+       ```bash
+       cat next.config.js
+       ```
+       Look for any obvious configuration issues
+    
+    3. **Review error messages**:
+       - Missing dependencies
+       - Import path issues
+       - TypeScript errors
+       - CSS/styling conflicts
+    
+    4. **Common fixes**:
+       ```bash
+       # Update Next.js to latest
+       npm install next@latest react@latest react-dom@latest
+       
+       # Fix TypeScript issues
+       npm install --save-dev @types/react @types/react-dom
+       
+       # Clear Next.js cache
+       rm -rf .next
+       npm run dev
+       ```
+  </Accordion>
+</AccordionGroup>
+
+## Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Conversion is very slow">
+    **Problem**: Converting files or projects takes a long time
+    
+    **Solutions**:
+    
+    1. **Check file size**:
+       ```bash
+       ls -lh MyComponent.tsx
+       ```
+       Very large files (>100KB) take longer
+    
+    2. **Break down large files**:
+       - Split large components into smaller ones
+       - Extract utility functions
+       - Separate types and interfaces
+    
+    3. **Check network (for migrations)**:
+       - Full migrations require API calls
+       - Slow internet affects migration speed
+       - Use `--dry-run` for local-only testing
+    
+    4. **System resources**:
+       - Close other applications
+       - Check available RAM and CPU
+       - Use faster storage (SSD vs HDD)
+  </Accordion>
+  
+  <Accordion title="High memory usage">
+    **Problem**: Tool uses too much memory during conversion
+    
+    **Solutions**:
+    
+    1. **Process files individually**:
+       ```bash
+       # Instead of: next-lovable convert src/**/*.tsx
+       # Use: find src -name "*.tsx" -exec next-lovable convert {} \;
+       ```
+    
+    2. **Close other applications** to free up memory
+    
+    3. **Increase Node.js memory limit**:
+       ```bash
+       node --max-old-space-size=4096 $(which next-lovable) convert MyComponent.tsx
+       ```
+    
+    4. **Break down large projects** into smaller batches
+  </Accordion>
+</AccordionGroup>
+
+## Getting Help
+
+### Debug Information
+
+When reporting issues, include this information:
+
+```bash
+# Next-lovable version
+next-lovable --version
+
+# Node.js version
+node --version
+
+# npm version
+npm --version
+
+# Operating system
+uname -a  # Linux/macOS
+# or
+systeminfo  # Windows
+
+# File you're trying to convert (if small)
+cat MyComponent.tsx
+```
+
+### Log Files
+
+Enable verbose logging for detailed error information:
+
+```bash
+next-lovable convert MyComponent.tsx --verbose
+```
+
+### Support Channels
+
+<CardGroup cols={3}>
+  <Card title="GitHub Issues" href="https://github.com/chihebnabil/next-lovable/issues" icon="github">
+    Report bugs and feature requests
+  </Card>
+  <Card title="Discord Community" href="https://discord.gg/nextlovable" icon="discord">
+    Get help from the community
+  </Card>
+  <Card title="Documentation" href="/0.0.7" icon="book">
+    Browse all documentation
+  </Card>
+</CardGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I undo a conversion?">
+    **Short answer**: Only if you have backups.
+    
+    **Best practices**:
+    1. Always use `--dry-run` first
+    2. Use `--output` to save to different location
+    3. Commit to git before converting
+    4. Use version control to track changes
+  </Accordion>
+  
+  <Accordion title="Why wasn't my complex routing converted?">
+    Some routing patterns are too complex for automatic conversion:
+    - Custom route guards
+    - Dynamic imports with complex logic
+    - Nested routing with conditional rendering
+    - Integration with state management libraries
+    
+    These require manual migration.
+  </Accordion>
+  
+  <Accordion title="Will this work with my custom webpack config?">
+    The tool focuses on converting React/Router code, not build configurations.
+    
+    For Vite → Next.js migration:
+    - Next.js handles most bundling automatically
+    - Custom webpack configs may need manual porting
+    - Most Vite plugins have Next.js equivalents
+  </Accordion>
+  
+  <Accordion title="How do I handle custom hooks that use React Router?">
+    Custom hooks using React Router internals need manual conversion:
+    
+    ```tsx
+    // Before
+    const useAuth = () => {
+      const navigate = useNavigate();
+      // ... logic
+    };
+    
+    // After (manual conversion needed)
+    'use client';
+    const useAuth = () => {
+      const router = useRouter();
+      // ... updated logic
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Report a Bug
+
+Found a bug? Please report it with:
+
+1. **Clear description** of the problem
+2. **Steps to reproduce** the issue
+3. **Expected vs actual behavior**
+4. **Sample code** that causes the issue
+5. **System information** (OS, Node.js version, etc.)
+
+[Report on GitHub →](https://github.com/Remote-Skills/next-lovable-cli-issues/issues/new?labels=v0.0.7)

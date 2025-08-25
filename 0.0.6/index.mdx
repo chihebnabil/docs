@@ -1,108 +1,260 @@
 ---
-title: "next-lovable CLI"
-description: "Automatically migrate React applications to Next.js 13+ App Router with intelligent React Router conversion"
+title: "next-lovable CLI v0.0.6"
+description: "Automatically migrate React applications to Next.js 13+ App Router - Legacy version with full authentication"
 icon: "rocket"
-version: "0.0.64"
+version: "0.0.6"
 ---
 
-<Card title="What is next-lovable?" icon="lightbulb">
-  A smart CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. It specializes in migrating React Router applications with zero manual work.
+<Warning>
+  **Legacy Version**: This is version 0.0.6 which requires authentication for all operations. Consider upgrading to [version 0.0.7+](/0.0.7) for free single file conversions and enhanced features.
+</Warning>
+
+<Card title="What is next-lovable v0.0.6?" icon="lightbulb">
+  A CLI tool that automatically converts your React applications to Next.js 13\+ using the new App Router. This legacy version provides full project migration capabilities with API-based processing.
 </Card>
 
 ## Key Features
 
 <CardGroup cols={2}>
-  <Card title="Smart Router Conversion" icon="route">
-    Automatically converts React Router to Next.js App Router
+  <Card title="Complete Project Migration" icon="folder-arrow-right">
+    Full React to Next.js App Router conversion
   </Card>
-  <Card title="Free Single File Testing" icon="file-code">
-    Test individual components without credits or authentication
+  <Card title="Smart Router Conversion" icon="route">
+    React Router to Next.js navigation transformation
   </Card>
   <Card title="Vite to Next.js Migration" icon="box">
-    Seamlessly migrates from Vite build system to Next.js
+    Seamlessly migrates from Vite build system
   </Card>
   <Card title="Intelligent Components" icon="brain">
     Automatically adds 'use client' directives where needed
   </Card>
 </CardGroup>
 
-## Quick Start
-
-### Prerequisites
-
-Before you begin, make sure you have:
+## Get Started
 
 <Steps>
-  <Step title="Node.js 18.x or higher">
-    Check your version with `node --version`
+  <Step title="Install the CLI">
+    ```bash
+    npm install -g next-lovable@0.0.6
+    ```
   </Step>
-  <Step title="npm or yarn">
-    Your preferred package manager
-  </Step>
-  <Step title="React Router Project">
-    A React application using React Router and Vite
-  </Step>
-  <Step title="nextlovable.com account">
-    Only needed for full project migrations (single file conversion is free\!)
-  </Step>
-</Steps>
-
-### Installation
-
-```bash
-npm install -g next-lovable
-```
-
-<Tip>
-  Installing globally allows you to use `next-lovable` from anywhere on your system.
-</Tip>
-
-## Usage Guide
-
-### Full Project Migration
-
-<Warning>
-  Full project migration requires a nextlovable.com account and consumes credits. Always test individual files first\!
-</Warning>
-
-<Steps>
-  <Step title="Run a Dry Run First">
+  <Step title="Preview your migration">
     ```bash
     next-lovable ./my-react-app --dry-run
     ```
-
-    This shows you exactly what will be changed without making any modifications.
   </Step>
-  <Step title="Execute the Migration">
+  <Step title="Run the migration">
     ```bash
-    next-lovable ./my-react-app ./next-app --yes --install
+    next-lovable ./my-react-app ./my-next-app --yes --install
     ```
-
-    This creates a new Next.js project and installs dependencies.
   </Step>
 </Steps>
 
-## Command Reference (Requires Account)
+## Documentation
 
-<ParamField path="source-directory" type="string" required>
-  Path to your React application
-</ParamField>
+<CardGroup cols={3}>
+  <Card title="Installation Guide" href="/0.0.6/installation" icon="download">
+    Setup and authentication instructions
+  </Card>
+  <Card title="Quick Start" href="/0.0.6/quick-start" icon="play">
+    Your first migration in 5 minutes
+  </Card>
+  <Card title="Migration Command" href="/0.0.6/commands/migrate" icon="folder-arrow-right">
+    Complete command reference
+  </Card>
+  <Card title="Troubleshooting" href="/0.0.6/guides/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+  <Card title="Upgrade to v0.0.7+" href="/0.0.7" icon="arrow-up">
+    Enhanced features and free conversions
+  </Card>
+</CardGroup>
 
-<ParamField path="target-directory" type="string">
-  Where to create the new Next.js project (optional)
-</ParamField>
+## What You Can Do
 
-<ParamField path="--dry-run, -d" type="boolean">
-  Simulate migration without making changes
-</ParamField>
+### Full Project Migration (Authentication Required)
 
-<ParamField path="--yes, -y" type="boolean">
-  Skip confirmation prompts
-</ParamField>
+<CardGroup cols={2}>
+  <Card title="Complete Migration" icon="folder">
+    Convert entire React applications to Next.js
+  </Card>
+  <Card title="Preview Changes" icon="eye">
+    See exactly what will change before applying
+  </Card>
+</CardGroup>
 
-<ParamField path="--install, -i" type="boolean">
-  Install dependencies after migration
-</ParamField>
+## What Gets Converted
+
+<AccordionGroup>
+  <Accordion title="React Router → Next.js App Router">
+    - `useNavigate()` → `useRouter()` from `next/navigation`
+    - `<Link to="/path">` → `<Link href="/path">` from `next/link`
+    - `useLocation()` → `usePathname()` and `useSearchParams()`
+    - Route structure converted to app directory
+  </Accordion>
+  
+  <Accordion title="Project Structure">
+    - Vite configuration → Next.js configuration
+    - Component organization for App Router
+    - Package.json scripts and dependencies
+    - TypeScript configuration updates
+  </Accordion>
+  
+  <Accordion title="Component Enhancements">
+    - Automatic "use client" directive addition
+    - Server/client component separation
+    - Import path optimization
+  </Accordion>
+</AccordionGroup>
+
+## Command Reference
+
+| Task | Command | Authentication | Credits |
+|------|---------|----------------|---------|
+| Preview migration | `next-lovable ./app --dry-run` | ✅ Yes | ❌ No |
+| Full migration | `next-lovable ./app ./next-app` | ✅ Yes | ✅ Yes |
+
+## Real-World Example
+
+<CodeGroup>
+
+```tsx Before (React + Vite)
+// src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+```tsx After (Next.js App Router)
+// app/layout.tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+// app/page.tsx (Home)
+export default function Home() {
+  return <div>Home Page</div>;
+}
+
+// app/about/page.tsx
+export default function About() {
+  return <div>About Page</div>;
+}
+```
+
+</CodeGroup>
+
+## Version 0.0.6 Limitations
+
+<Warning>
+  **Important Limitations**:
+  
+  - **Authentication required** for all operations
+  - **Credit consumption** for all migrations
+  - **No single file mode** - only full project migration
+  - **Limited error recovery** compared to newer versions
+  - **Simpler CLI** without subcommands
+</Warning>
+
+## Why Upgrade to v0.0.7+?
+
+<CardGroup cols={2}>
+  <Card title="Free Features" icon="gift">
+    Single file conversions without authentication
+  </Card>
+  <Card title="Better CLI" icon="terminal">
+    Subcommand structure with more control
+  </Card>
+  <Card title="Enhanced Performance" icon="gauge-high">
+    Faster processing and better error handling
+  </Card>
+  <Card title="Granular Control" icon="sliders">
+    Choose specific transformations to apply
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Migration Path**: Existing v0.0.6 users can easily upgrade to the latest version for enhanced features and free single file conversions.
+</Tip>
+
+## Command Structure
+
+Version 0.0.6 uses a simple command structure:
+
+```bash
+# Basic migration
+next-lovable <source-directory> [target-directory]
+
+# With options
+next-lovable ./my-app ./next-app --dry-run --yes --install
+```
+
+### Available Options
+
+- `--dry-run, -d` - Preview changes without making them
+- `--yes, -y` - Skip confirmation prompts
+- `--install, -i` - Install dependencies after migration
+
+## 🔧 Prerequisites
+
+<Steps>
+  <Step title="Node.js 16+">
+    Version 0.0.6 requires Node.js 16.x or higher
+  </Step>
+  <Step title="React Project">
+    A React application using React Router
+  </Step>
+  <Step title="nextlovable.com Account">
+    Required for authentication and API access
+  </Step>
+  <Step title="Active Credits">
+    Migration operations consume credits
+  </Step>
+</Steps>
+
+## Need Help?
+
+<CardGroup>
+  <Card title="Done for you" href="https://nextlovable.com/done-for-you" icon="github">
+    We'll convert your beautiful Lovable app into a lightning-fast, SEO-ready website that actually shows up in search results. No coding required.
+  </Card>
+</CardGroup>
+
+## Ready to Migrate?
+
+<CardGroup cols={2}>
+  <Card title="Start with v0.0.6" href="/0.0.6/quick-start" icon="play">
+    Use the current legacy version
+  </Card>
+  <Card title="Upgrade to Latest" href="/0.0.7" icon="arrow-up">
+    Get enhanced features and free conversions
+  </Card>
+</CardGroup>
+
+---
+
+**Legacy Support**: While v0.0.6 continues to work, we recommend upgrading to [version 0.0.7+](/0.0.7) for the best experience with free features and enhanced capabilities.
 
 ## What Gets Converted
 
@@ -186,7 +338,7 @@ export const PageMeta = ({ title, description }) => (
 
 | Task                      | Command                                          | Credits Required | Authentication |
 | ------------------------- | ------------------------------------------------ | ---------------- | -------------- |
-| Preview project migration | `next-lovable migrate ./my-app --dry-run`        | ✅ Yes            | ✅ Yes          |
+| Preview project migration | `next-lovable migrate ./my-app --dry-run`        | ❌            | ✅ Yes          |
 | Full project migration    | `next-lovable migrate ./my-app ./next-app`       | ✅ Yes            | ✅ Yes          |
 
 ## ⚠️ Important Notes

@@ -6,7 +6,7 @@
     "light": "/logo.png",
     "dark": "/logo.png"
   },
-  "favicon": "/favicon.ico",
+  "favicon": "/favicon.svg",
   "colors": {
     "primary": "#2563eb",
     "light": "#93c5fd",
@@ -20,7 +20,21 @@
           {
             "group": "Getting Started",
             "pages": [
-              "index.mdx"
+              "0.0.6/index",
+              "0.0.6/installation",
+              "0.0.6/quick-start"
+            ]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "0.0.6/commands/migrate"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "0.0.6/guides/troubleshooting"
             ]
           }
         ]
@@ -31,12 +45,25 @@
           {
             "group": "Getting Started",
             "pages": [
-              "index.mdx"
+              "0.0.7/index",
+              "0.0.7/installation",
+              "0.0.7/quick-start"
+            ]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "0.0.7/commands/convert"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "0.0.7/guides/troubleshooting"
             ]
           }
         ]
       }
     ]
-  },
-  "defaultVersion": "0.0.7+"
+  }
 }

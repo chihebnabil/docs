@@ -1,0 +1,617 @@
+---
+title: "Troubleshooting"
+description: "Common issues and solutions when using next-lovable version 0.0.6"
+icon: "wrench"
+---
+
+## Common Issues in Version 0.0.6
+
+### Authentication Problems
+
+<AccordionGroup>
+  <Accordion title="Cannot authenticate / API key rejected">
+    **Problem**: Authentication fails with "Invalid API key" or similar errors
+    
+    **Solutions**:
+    
+    1. **Verify API key is correct**:
+       - Log into [nextlovable.com](https://nextlovable.com)
+       - Go to your dashboard
+       - Copy the API key exactly (no extra spaces)
+    
+    2. **Re-run authentication**:
+       ```bash
+       next-lovable auth
+       ```
+       Paste the API key when prompted
+    
+    3. **Check account status**:
+       - Ensure your account is active
+       - Verify you have credits remaining
+       - Check for any billing issues
+    
+    4. **Network connectivity**:
+       ```bash
+       curl -I https://api.nextlovable.com/health
+       ```
+       Should return a 200 status code
+  </Accordion>
+  
+  <Accordion title="Authentication token expired">
+    **Problem**: Previously working authentication suddenly fails
+    
+    **Solutions**:
+    
+    1. **Re-authenticate**:
+       ```bash
+       next-lovable auth
+       ```
+    
+    2. **Check token storage**:
+       ```bash
+       # Check if config exists
+       ls -la ~/.next-lovable/
+       ```
+    
+    3. **Clear stored credentials and re-auth**:
+       ```bash
+       rm -rf ~/.next-lovable/
+       next-lovable auth
+       ```
+  </Accordion>
+  
+  <Accordion title="Network/firewall issues">
+    **Problem**: Cannot connect to authentication servers
+    
+    **Solutions**:
+    
+    1. **Check firewall settings**:
+       - Ensure outbound HTTPS (port 443) is allowed
+       - Whitelist `*.nextlovable.com` domains
+    
+    2. **Corporate proxy**:
+       ```bash
+       # Set proxy if needed
+       export HTTPS_PROXY=http://proxy.company.com:8080
+       next-lovable auth
+       ```
+    
+    3. **Test connectivity**:
+       ```bash
+       ping api.nextlovable.com
+       curl -v https://api.nextlovable.com
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Installation Issues
+
+<AccordionGroup>
+  <Accordion title="Command not found: next-lovable">
+    **Problem**: After installation, running `next-lovable` shows "command not found"
+    
+    **Solutions**:
+    
+    1. **Restart your terminal** - This refreshes the PATH
+    
+    2. **Check installation location**:
+       ```bash
+       npm list -g next-lovable
+       which next-lovable
+       ```
+    
+    3. **Verify npm global bin is in PATH**:
+       ```bash
+       npm config get prefix
+       echo $PATH
+       ```
+       The npm prefix path should be in your PATH
+    
+    4. **Add npm global bin to PATH** (if missing):
+       ```bash
+       # For bash/zsh
+       echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
+       source ~/.bashrc
+       ```
+    
+    5. **Use npx as alternative**:
+       ```bash
+       npx next-lovable@0.0.6 ./my-app
+       ```
+  </Accordion>
+  
+  <Accordion title="Version mismatch after installation">
+    **Problem**: `next-lovable --version` shows wrong version
+    
+    **Solutions**:
+    
+    1. **Uninstall and reinstall specific version**:
+       ```bash
+       npm uninstall -g next-lovable
+       npm install -g next-lovable@0.0.6
+       ```
+    
+    2. **Clear npm cache**:
+       ```bash
+       npm cache clean --force
+       npm install -g next-lovable@0.0.6
+       ```
+    
+    3. **Check for multiple installations**:
+       ```bash
+       # Find all installations
+       find / -name "next-lovable" 2>/dev/null
+       which -a next-lovable
+       ```
+  </Accordion>
+  
+  <Accordion title="Node.js version compatibility">
+    **Problem**: Errors about Node.js version being incompatible
+    
+    **Solutions**:
+    
+    1. **Check Node.js version**:
+       ```bash
+       node --version
+       ```
+       Version 0.0.6 requires Node.js 16.x or higher
+    
+    2. **Update Node.js**:
+       - Visit [nodejs.org](https://nodejs.org/) for official installer
+       - Or use nvm: `nvm install 18 && nvm use 18`
+    
+    3. **For Ubuntu/Debian**:
+       ```bash
+       curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+       sudo apt-get install -y nodejs
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Migration Issues
+
+<AccordionGroup>
+  <Accordion title="Source directory not recognized as React project">
+    **Problem**: Tool doesn't recognize your React project
+    
+    **Solutions**:
+    
+    1. **Verify package.json exists and contains React**:
+       ```bash
+       cat package.json | grep -E "(react|react-dom|react-router)"
+       ```
+    
+    2. **Check for required dependencies**:
+       ```json
+       {
+         "dependencies": {
+           "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+           "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
+           "react-router-dom": "^5.0.0 || ^6.0.0"
+         }
+       }
+       ```
+    
+    3. **Install missing dependencies**:
+       ```bash
+       npm install react react-dom react-router-dom
+       ```
+    
+    4. **Check project structure**:
+       Ensure you have components or pages that use React Router
+  </Accordion>
+  
+  <Accordion title="Migration fails with syntax errors">
+    **Problem**: Migration stops due to syntax errors in source files
+    
+    **Solutions**:
+    
+    1. **Fix syntax errors first**:
+       ```bash
+       # Check for TypeScript errors
+       npx tsc --noEmit
+       
+       # Check for ESLint errors
+       npx eslint src/
+       ```
+    
+    2. **Common syntax issues in v0.0.6**:
+       - Missing semicolons
+       - Incorrect JSX syntax
+       - TypeScript type errors
+       - Import/export statement issues
+    
+    3. **Simplify complex patterns**:
+       - Break down large components
+       - Remove experimental JavaScript features
+       - Fix any linting errors
+    
+    4. **Skip problematic files**:
+       Move complex files out temporarily, migrate, then manually port them
+  </Accordion>
+  
+  <Accordion title="Target directory creation fails">
+    **Problem**: Cannot create or write to target directory
+    
+    **Solutions**:
+    
+    1. **Check permissions**:
+       ```bash
+       ls -ld /path/to/parent/directory
+       touch /path/to/parent/directory/test-file
+       ```
+    
+    2. **Use different location**:
+       ```bash
+       # Try in your home directory
+       next-lovable ./my-app ~/my-next-app
+       ```
+    
+    3. **Check disk space**:
+       ```bash
+       df -h
+       ```
+    
+    4. **Run with elevated permissions if needed**:
+       ```bash
+       sudo next-lovable ./my-app /opt/my-next-app
+       ```
+  </Accordion>
+  
+  <Accordion title="Migration incomplete / hangs">
+    **Problem**: Migration process stops or hangs partway through
+    
+    **Solutions**:
+    
+    1. **Check network connectivity**:
+       ```bash
+       ping api.nextlovable.com
+       curl -I https://api.nextlovable.com/health
+       ```
+    
+    2. **Monitor system resources**:
+       ```bash
+       # Check memory usage
+       free -h
+       
+       # Check CPU usage
+       top
+       ```
+    
+    3. **Try smaller batches**:
+       - Exclude large files temporarily
+       - Remove node_modules before migration
+       - Clear any build artifacts
+    
+    4. **Enable verbose logging**:
+       ```bash
+       DEBUG=next-lovable* next-lovable ./my-app
+       ```
+    
+    5. **Kill and restart**:
+       ```bash
+       # Find and kill hung process
+       ps aux | grep next-lovable
+       kill -9 <process-id>
+       
+       # Clean up and retry
+       rm -rf target-directory
+       next-lovable ./my-app ./clean-target
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Post-Migration Issues
+
+<AccordionGroup>
+  <Accordion title="Generated Next.js app won't start">
+    **Problem**: `npm run dev` fails with errors
+    
+    **Solutions**:
+    
+    1. **Install dependencies**:
+       ```bash
+       cd migrated-project
+       npm install
+       ```
+    
+    2. **Common dependency issues**:
+       ```bash
+       # Install missing Next.js types
+       npm install --save-dev @types/react @types/react-dom @types/node
+       
+       # Update to compatible versions
+       npm install next@13 react@18 react-dom@18
+       ```
+    
+    3. **Fix configuration issues**:
+       ```bash
+       # Check next.config.js for syntax errors
+       node -c next.config.js
+       
+       # Regenerate if corrupted
+       rm next.config.js
+       # Create minimal config
+       echo "module.exports = {}" > next.config.js
+       ```
+    
+    4. **Clear cache and rebuild**:
+       ```bash
+       rm -rf .next node_modules package-lock.json
+       npm install
+       npm run dev
+       ```
+  </Accordion>
+  
+  <Accordion title="Routing doesn't work correctly">
+    **Problem**: Pages don't load or routing is broken
+    
+    **Solutions**:
+    
+    1. **Check App Router structure**:
+       ```bash
+       # Should have this structure
+       app/
+       ├── layout.tsx
+       ├── page.tsx (home page)
+       ├── about/
+       │   └── page.tsx
+       └── contact/
+           └── page.tsx
+       ```
+    
+    2. **Verify page.tsx exports**:
+       ```tsx
+       // Each page.tsx should export default
+       export default function PageName() {
+         return <div>Content</div>;
+       }
+       ```
+    
+    3. **Check for client component issues**:
+       ```tsx
+       // Add 'use client' if component uses hooks or event handlers
+       'use client';
+       
+       import { useState } from 'react';
+       // ... rest of component
+       ```
+    
+    4. **Review navigation components**:
+       Ensure Link components use `href` instead of `to`
+  </Accordion>
+  
+  <Accordion title="TypeScript errors after migration">
+    **Problem**: Many TypeScript errors in migrated code
+    
+    **Solutions**:
+    
+    1. **Update TypeScript configuration**:
+       ```json
+       // tsconfig.json
+       {
+         "compilerOptions": {
+           "target": "es5",
+           "lib": ["dom", "dom.iterable", "es6"],
+           "allowJs": true,
+           "skipLibCheck": true,
+           "strict": false,
+           "forceConsistentCasingInFileNames": true,
+           "noEmit": true,
+           "esModuleInterop": true,
+           "module": "esnext",
+           "moduleResolution": "node",
+           "resolveJsonModule": true,
+           "isolatedModules": true,
+           "jsx": "preserve",
+           "incremental": true,
+           "plugins": [
+             {
+               "name": "next"
+             }
+           ]
+         },
+         "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+         "exclude": ["node_modules"]
+       }
+       ```
+    
+    2. **Install missing type definitions**:
+       ```bash
+       npm install --save-dev @types/react @types/react-dom @types/node
+       ```
+    
+    3. **Fix common type issues**:
+       ```tsx
+       // Add proper typing for components
+       interface Props {
+         children: React.ReactNode;
+       }
+       
+       export default function Component({ children }: Props) {
+         return <div>{children}</div>;
+       }
+       ```
+  </Accordion>
+</AccordionGroup>
+
+### Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Migration is very slow">
+    **Problem**: Migration takes an extremely long time
+    
+    **Solutions**:
+    
+    1. **Check project size**:
+       ```bash
+       du -sh ./my-react-app
+       find ./my-react-app -name "*.tsx" -o -name "*.ts" | wc -l
+       ```
+    
+    2. **Exclude unnecessary files**:
+       ```bash
+       # Remove build artifacts first
+       rm -rf node_modules dist build .next
+       ```
+    
+    3. **Check network speed**:
+       ```bash
+       # Test upload speed to API
+       curl -w "@curl-format.txt" -s -o /dev/null https://api.nextlovable.com/health
+       ```
+    
+    4. **System resources**:
+       - Close other applications
+       - Check available RAM and CPU
+       - Use faster storage (SSD vs HDD)
+  </Accordion>
+  
+  <Accordion title="High credit consumption">
+    **Problem**: Migration uses more credits than expected
+    
+    **Solutions**:
+    
+    1. **Check project complexity**:
+       - Large projects consume more credits
+       - Complex routing patterns increase usage
+       - Many components increase processing
+    
+    2. **Use dry-run to estimate**:
+       ```bash
+       next-lovable ./my-app --dry-run
+       ```
+       This shows estimated credit usage
+    
+    3. **Consider breaking down project**:
+       - Migrate in smaller chunks
+       - Remove unused components
+       - Simplify complex routing
+    
+    4. **Upgrade to newer version**:
+       Version 0.0.7+ offers free single file conversions
+  </Accordion>
+</AccordionGroup>
+
+## Version 0.0.6 Specific Limitations
+
+<Warning>
+  **Known Limitations in v0.0.6**:
+  
+  - All operations require authentication and credits
+  - No single file conversion mode
+  - Limited error recovery options
+  - No granular transformation control
+  - Older React Router patterns may not convert perfectly
+</Warning>
+
+### Workarounds
+
+1. **For testing small changes**: Use online converters or manual conversion
+2. **For better control**: Upgrade to version 0.0.7+
+3. **For complex projects**: Consider manual migration with v0.0.6 as reference
+
+## Getting Help
+
+### Debug Information
+
+When reporting issues, include:
+
+```bash
+# Version information
+next-lovable --version
+node --version
+npm --version
+
+# System information
+uname -a
+
+# Project information
+ls -la my-react-app/
+cat my-react-app/package.json
+
+# Error logs (if available)
+cat ~/.next-lovable/logs/latest.log
+```
+
+### Support Channels
+
+<CardGroup cols={3}>
+  <Card title="GitHub Issues" href="https://github.com/chihebnabil/next-lovable/issues" icon="github">
+    Report bugs specific to v0.0.6
+  </Card>
+  <Card title="Discord Community" href="https://discord.gg/nextlovable" icon="discord">
+    Get help from other users
+  </Card>
+  <Card title="Documentation" href="/0.0.6" icon="book">
+    Browse v0.0.6 documentation
+  </Card>
+</CardGroup>
+
+## Upgrade Recommendation
+
+<Info>
+  **Consider upgrading to version 0.0.7+** for:
+  
+  - Free single file conversions
+  - Better error handling
+  - More granular control
+  - Improved performance
+  - Enhanced CLI experience
+</Info>
+
+<CardGroup cols={2}>
+  <Card title="Version 0.0.7+ Features" href="/0.0.7" icon="arrow-up">
+    See what's new in newer versions
+  </Card>
+  <Card title="Migration Guide" href="/0.0.7/quick-start" icon="rocket">
+    Learn how to use the latest version
+  </Card>
+</CardGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I use v0.0.6 without authentication?">
+    **No**, version 0.0.6 requires authentication for all operations, including single file conversions. Consider upgrading to 0.0.7+ for free features.
+  </Accordion>
+  
+  <Accordion title="Can I undo a migration?">
+    Only if you:
+    1. Used a separate target directory (recommended)
+    2. Have backups or version control
+    3. Used `--dry-run` first to understand changes
+    
+    There's no built-in undo feature in v0.0.6.
+  </Accordion>
+  
+  <Accordion title="Why does my complex routing not convert correctly?">
+    Version 0.0.6 has limited support for:
+    - Custom route guards
+    - Dynamic route configurations
+    - Nested routing with complex logic
+    - Integration with state management
+    
+    These require manual migration or upgrading to newer versions.
+  </Accordion>
+  
+  <Accordion title="How do I migrate from v0.0.6 to newer versions?">
+    1. Uninstall v0.0.6: `npm uninstall -g next-lovable`
+    2. Install latest: `npm install -g next-lovable`
+    3. Note: Command structure changed in v0.0.7+
+    4. Read the [v0.0.7+ documentation](/0.0.7) for new features
+  </Accordion>
+</AccordionGroup>
+
+## Report a Bug
+
+Found a bug specific to version 0.0.6? Please report it with:
+
+1. **Version confirmation**: `next-lovable --version` output
+2. **Clear description** of the problem
+3. **Steps to reproduce** the issue
+4. **Sample project** that demonstrates the issue
+5. **Expected vs actual behavior**
+6. **System information** (OS, Node.js version, etc.)
+
+[Report on GitHub →](https://github.com/Remote-Skills/next-lovable-cli-issues/issues/new?labels=v0.0.6)
