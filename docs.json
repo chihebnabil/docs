@@ -6,7 +6,7 @@
     "light": "/logo.png",
     "dark": "/logo.png"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "colors": {
     "primary": "#2563eb",
     "light": "#93c5fd",
@@ -53,7 +53,8 @@
           {
             "group": "Commands",
             "pages": [
-              "0.0.7/commands/convert"
+              "0.0.7/commands/convert",
+              "0.0.7/commands/migrate"
             ]
           },
           {

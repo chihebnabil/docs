@@ -1,0 +1,662 @@
+---
+title: "Migrate Command"
+description: "Complete project migration from React to Next.js using version 0.0.7+"
+icon: "folder-arrow-right"
+---
+
+<Info>
+  The `migrate` command performs **full project migrations** and requires **authentication and credits**. For free single file conversions, use the [`convert` command](/0.0.7/commands/convert).
+</Info>
+
+## Basic Usage
+
+```bash
+next-lovable migrate <source-directory> [target-directory] [options]
+```
+
+## Authentication Required
+
+Before using the migrate command, you must authenticate:
+
+```bash
+next-lovable auth
+```
+
+Enter your API key from [nextlovable.com](https://nextlovable.com) when prompted.
+
+## Examples
+
+### Basic Migration
+
+Migrate to a new directory:
+
+```bash
+next-lovable migrate ./my-react-app ./my-next-app
+```
+
+### In-Place Migration
+
+Migrate in the same directory (be careful!):
+
+```bash
+next-lovable migrate ./my-react-app
+```
+
+### Preview Changes First
+
+See what will change without making modifications:
+
+```bash
+next-lovable migrate ./my-react-app --dry-run
+```
+
+### Automated Migration
+
+Skip confirmations and install dependencies:
+
+```bash
+next-lovable migrate ./my-react-app ./my-next-app --yes --install
+```
+
+## Command Options
+
+<ParamField path="source-directory" type="string" required>
+  Path to your React application directory. Must contain a `package.json` file with React and React Router dependencies.
+  
+  **Examples:**
+  - `./my-react-app`
+  - `/path/to/react-project`
+  - `../frontend`
+</ParamField>
+
+<ParamField path="target-directory" type="string">
+  Directory where the new Next.js project will be created. If omitted, migration happens in-place in the source directory.
+  
+  **Examples:**
+  - `./my-next-app`
+  - `/path/to/next-project`
+  - `../next-frontend`
+  
+  **Note:** Directory will be created if it doesn't exist.
+</ParamField>
+
+<ParamField path="--dry-run, -d" type="boolean">
+  Simulate the migration without making any actual changes. Shows you exactly what files will be created, modified, or removed.
+  
+  **Example:**
+  ```bash
+  next-lovable migrate ./my-app --dry-run
+  ```
+  
+  **Output includes:**
+  - List of files to be converted
+  - New file structure
+  - Dependencies to be added/removed
+  - Configuration changes
+  - Estimated credit consumption
+</ParamField>
+
+<ParamField path="--yes, -y" type="boolean">
+  Skip all confirmation prompts and proceed with migration automatically.
+  
+  **Example:**
+  ```bash
+  next-lovable migrate ./my-app ./next-app --yes
+  ```
+  
+  **Use with caution** - this will proceed without asking for confirmation.
+</ParamField>
+
+<ParamField path="--install, -i" type="boolean">
+  Automatically install dependencies after migration completes.
+  
+  **Example:**
+  ```bash
+  next-lovable migrate ./my-app ./next-app --install
+  ```
+  
+  Equivalent to running `npm install` in the target directory after migration.
+</ParamField>
+
+<ParamField path="--transform, -t" type="string">
+  Comma-separated list of transformations to apply during migration. Available options:
+  
+  - `router` - React Router to Next.js navigation
+  - `helmet` - React Helmet to Next.js Head
+  - `client` - Auto-detect and add 'use client' directive
+  - `context` - React Context provider migration
+  - `all` - Apply all transformations (default)
+  
+  **Examples:**
+  - `--transform router,client`
+  - `--transform all`
+  - `-t helmet,context`
+</ParamField>
+
+<ParamField path="--help, -h" type="boolean">
+  Show help information for the migrate command.
+  
+  **Example:**
+  ```bash
+  next-lovable migrate --help
+  ```
+</ParamField>
+
+## Migration Process
+
+### What Happens During Migration
+
+<Steps>
+  <Step title="Project Analysis">
+    - Scans source directory for React components
+    - Identifies React Router usage patterns
+    - Analyzes component dependencies and structure
+    - Detects client vs server component requirements
+    - Estimates transformation complexity
+  </Step>
+  
+  <Step title="File Structure Creation">
+    - Creates Next.js app directory structure
+    - Sets up layout.tsx and page.tsx files
+    - Organizes components appropriately
+    - Creates necessary configuration files
+    - Preserves assets and public files
+  </Step>
+  
+  <Step title="Code Transformation">
+    - Converts React Router to Next.js navigation
+    - Transforms routing components to pages
+    - Adds 'use client' directives where needed
+    - Updates import statements and paths
+    - Converts React Helmet to Next.js Head
+  </Step>
+  
+  <Step title="Configuration Setup">
+    - Generates next.config.js
+    - Updates package.json with Next.js scripts
+    - Configures TypeScript settings (if used)
+    - Sets up ESLint and other development tools
+    - Migrates environment variables
+  </Step>
+</Steps>
+
+### File Structure Transformation
+
+<CodeGroup>
+
+```bash Before (React + Vite)
+my-react-app/
+├── src/
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── components/
+│   │   ├── Header.tsx
+│   │   └── Navigation.tsx
+│   ├── pages/
+│   │   ├── Home.tsx
+│   │   ├── About.tsx
+│   │   └── Contact.tsx
+│   ├── hooks/
+│   │   └── useAuth.ts
+│   └── styles/
+│       └── index.css
+├── public/
+├── package.json
+└── vite.config.js
+```
+
+```bash After (Next.js App Router)
+my-next-app/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── about/
+│   │   └── page.tsx
+│   ├── contact/
+│   │   └── page.tsx
+│   └── globals.css
+├── components/
+│   ├── Header.tsx
+│   └── Navigation.tsx
+├── hooks/
+│   └── useAuth.ts
+├── public/
+├── package.json
+└── next.config.js
+```
+
+</CodeGroup>
+
+## Code Transformations
+
+### React Router to App Router
+
+<CodeGroup>
+
+```tsx Before (React Router)
+// src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Contact from './pages/Contact';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Navigation() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  return (
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/about">About</Link>
+      <Link to="/contact">Contact</Link>
+      <span>Current: {location.pathname}</span>
+      <button onClick={() => navigate('/about')}>Go to About</button>
+    </nav>
+  );
+}
+```
+
+```tsx After (Next.js App Router)
+// app/layout.tsx
+import Navigation from '../components/Navigation';
+import './globals.css';
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <Navigation />
+        {children}
+      </body>
+    </html>
+  );
+}
+
+// components/Navigation.tsx
+'use client';
+
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
+function Navigation() {
+  const router = useRouter();
+  const pathname = usePathname();
+  
+  return (
+    <nav>
+      <Link href="/">Home</Link>
+      <Link href="/about">About</Link>
+      <Link href="/contact">Contact</Link>
+      <span>Current: {pathname}</span>
+      <button onClick={() => router.push('/about')}>Go to About</button>
+    </nav>
+  );
+}
+
+// app/page.tsx (Home)
+export default function Home() {
+  return <div>Home Page Content</div>;
+}
+
+// app/about/page.tsx
+export default function About() {
+  return <div>About Page Content</div>;
+}
+
+// app/contact/page.tsx
+export default function Contact() {
+  return <div>Contact Page Content</div>;
+}
+```
+
+</CodeGroup>
+
+### Package.json Migration
+
+<CodeGroup>
+
+```json Before
+{
+  "name": "my-react-app",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "react-helmet": "^6.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^3.1.0",
+    "vite": "^4.1.0",
+    "typescript": "^4.9.0"
+  }
+}
+```
+
+```json After
+{
+  "name": "my-next-app",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^13.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "^13.5.0",
+    "typescript": "^5"
+  }
+}
+```
+
+</CodeGroup>
+
+## Differences from v0.0.6
+
+<CardGroup cols={2}>
+  <Card title="Subcommand Structure" icon="terminal">
+    v0.0.7+ uses `migrate` subcommand vs direct command in v0.0.6
+  </Card>
+  <Card title="Granular Control" icon="sliders">
+    Choose specific transformations with `--transform` option
+  </Card>
+  <Card title="Better Error Handling" icon="shield">
+    Improved error messages and recovery options
+  </Card>
+  <Card title="Enhanced Performance" icon="gauge-high">
+    Faster processing and more efficient API usage
+  </Card>
+</CardGroup>
+
+## Command Comparison
+
+| Feature | v0.0.6 | v0.0.7+ |
+|---------|--------|---------|
+| Command | `next-lovable <source>` | `next-lovable migrate <source>` |
+| Free tier | ❌ No | ✅ Single file conversions |
+| Transformations | All or nothing | Granular control |
+| Error recovery | Limited | Enhanced |
+| Dry run detail | Basic | Comprehensive |
+
+## Error Handling & Troubleshooting
+
+### Pre-Migration Validation
+
+<AccordionGroup>
+  <Accordion title="Authentication Issues">
+    **Problem**: Cannot authenticate or invalid API key
+    
+    **Solutions**:
+    1. Re-run authentication: `next-lovable auth`
+    2. Verify API key from nextlovable.com dashboard
+    3. Check network connectivity to api.nextlovable.com
+    4. Ensure account has sufficient credits
+  </Accordion>
+  
+  <Accordion title="Source Project Not Recognized">
+    **Problem**: Tool doesn't detect React Router project
+    
+    **Solutions**:
+    1. Verify package.json contains React and React Router dependencies
+    2. Check that components actually use React Router hooks/components
+    3. Ensure project structure follows standard React conventions
+    4. Try running from the project root directory
+  </Accordion>
+  
+  <Accordion title="Target Directory Issues">
+    **Problem**: Cannot create or access target directory
+    
+    **Solutions**:
+    1. Check write permissions in parent directory
+    2. Ensure sufficient disk space available
+    3. Try using a different target location
+    4. Avoid special characters in directory names
+  </Accordion>
+</AccordionGroup>
+
+### During Migration
+
+<AccordionGroup>
+  <Accordion title="Migration Stalls or Fails">
+    **Problem**: Process hangs or stops with errors
+    
+    **Solutions**:
+    1. Check network connectivity
+    2. Verify API rate limits aren't exceeded
+    3. Try smaller project or exclude large files temporarily
+    4. Use `--dry-run` to identify potential issues first
+  </Accordion>
+  
+  <Accordion title="Syntax Errors in Source">
+    **Problem**: Migration fails due to invalid source code
+    
+    **Solutions**:
+    1. Fix TypeScript/JavaScript errors first
+    2. Run linting and fix issues
+    3. Remove or fix experimental language features
+    4. Ensure all imports resolve correctly
+  </Accordion>
+  
+  <Accordion title="Credit Consumption High">
+    **Problem**: Migration uses more credits than expected
+    
+    **Solutions**:
+    1. Use `--dry-run` to estimate credits first
+    2. Remove unused files and components
+    3. Consider migrating in phases
+    4. Optimize complex routing patterns
+  </Accordion>
+</AccordionGroup>
+
+### Post-Migration
+
+<AccordionGroup>
+  <Accordion title="Generated App Won't Start">
+    **Problem**: `npm run dev` fails in migrated project
+    
+    **Solutions**:
+    1. Run `npm install` to ensure all dependencies
+    2. Check for TypeScript compilation errors
+    3. Clear Next.js cache: `rm -rf .next`
+    4. Verify next.config.js is valid
+    5. Check for missing environment variables
+  </Accordion>
+  
+  <Accordion title="Routing Issues">
+    **Problem**: Pages don't load or navigation broken
+    
+    **Solutions**:
+    1. Verify App Router structure (app/page.tsx files)
+    2. Check that page components export default functions
+    3. Ensure 'use client' directives are added where needed
+    4. Verify Link components use `href` instead of `to`
+  </Accordion>
+  
+  <Accordion title="TypeScript Errors">
+    **Problem**: Type errors in migrated code
+    
+    **Solutions**:
+    1. Install missing type packages: `@types/react`, `@types/node`
+    2. Update tsconfig.json for Next.js compatibility
+    3. Fix component prop types
+    4. Address Next.js-specific type requirements
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Always Dry Run First" icon="eye">
+    Use `--dry-run` to preview all changes and estimate credits
+  </Card>
+  <Card title="Backup Your Code" icon="shield">
+    Commit to git or create backups before migration
+  </Card>
+  <Card title="Test Incrementally" icon="flask">
+    Test converted components individually before full deployment
+  </Card>
+  <Card title="Review Generated Code" icon="magnifying-glass">
+    Check converted components for any needed manual adjustments
+  </Card>
+</CardGroup>
+
+## Migration Checklist
+
+<Steps>
+  <Step title="Pre-Migration">
+    - [ ] Backup original project (git commit or copy)
+    - [ ] Verify authentication: `next-lovable auth`
+    - [ ] Run dry-run: `next-lovable migrate ./app --dry-run`
+    - [ ] Review estimated credit usage
+    - [ ] Check disk space and permissions
+  </Step>
+  
+  <Step title="During Migration">
+    - [ ] Monitor terminal output for errors
+    - [ ] Ensure stable network connection
+    - [ ] Don't interrupt the migration process
+    - [ ] Note any warnings or issues reported
+  </Step>
+  
+  <Step title="Post-Migration">
+    - [ ] Install dependencies: `npm install`
+    - [ ] Test development server: `npm run dev`
+    - [ ] Verify all routes work correctly
+    - [ ] Check for TypeScript/linting errors
+    - [ ] Test build process: `npm run build`
+    - [ ] Review and test all converted components
+  </Step>
+</Steps>
+
+## Advanced Usage
+
+### Selective Transformations
+
+Apply only specific transformations:
+
+```bash
+# Only convert routing, skip client directive detection
+next-lovable migrate ./my-app ./next-app --transform router
+
+# Convert routing and helmet, skip context providers
+next-lovable migrate ./my-app ./next-app --transform router,helmet
+
+# Apply all transformations (default)
+next-lovable migrate ./my-app ./next-app --transform all
+```
+
+### Batch Processing
+
+Migrate multiple projects:
+
+```bash
+# Using a loop
+for dir in project1 project2 project3; do
+  next-lovable migrate ./$dir ./migrated-$dir --yes
+done
+
+# With parallel processing (be careful with API limits)
+find ./projects -name "package.json" -exec dirname {} \; | \
+  xargs -I {} -P 3 next-lovable migrate {} {}-next --yes
+```
+
+### Integration with CI/CD
+
+```yaml
+# Example GitHub Actions workflow
+name: Migrate to Next.js
+on: workflow_dispatch
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install next-lovable
+        run: npm install -g next-lovable
+      
+      - name: Authenticate
+        run: echo "${{ secrets.NEXTLOVABLE_API_KEY }}" | next-lovable auth
+      
+      - name: Run migration
+        run: next-lovable migrate ./react-app ./next-app --yes --install
+      
+      - name: Test build
+        run: cd next-app && npm run build
+```
+
+## What's Next?
+
+<Steps>
+  <Step title="Test Your Migrated App">
+    Thoroughly test all routes and functionality in your new Next.js app
+  </Step>
+  <Step title="Optimize Performance">
+    Review and optimize server/client components for better performance
+  </Step>
+  <Step title="Deploy">
+    Deploy your new Next.js app to your preferred hosting platform
+  </Step>
+  <Step title="Monitor & Iterate">
+    Monitor the app in production and make necessary adjustments
+  </Step>
+</Steps>
+
+<CardGroup cols={3}>
+  <Card title="Convert Command" href="/0.0.7/commands/convert" icon="file-arrow-right">
+    Free single file conversions
+  </Card>
+  <Card title="Troubleshooting" href="/0.0.7/guides/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+  <Card title="Best Practices" href="/0.0.7/guides/best-practices" icon="star">
+    Tips for successful migrations
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="GitHub Issues" href="https://github.com/chihebnabil/next-lovable/issues" icon="github">
+    Report bugs and request features
+  </Card>
+  <Card title="Discord Community" href="https://discord.gg/nextlovable" icon="discord">
+    Get help from the community
+  </Card>
+</CardGroup>
