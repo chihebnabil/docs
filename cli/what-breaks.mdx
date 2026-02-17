@@ -1,0 +1,504 @@
+---
+title: "What Breaks"
+description: "Patterns that require manual intervention after conversion"
+icon: "triangle-exclamation"
+---
+
+# What Breaks
+
+The CLI handles the mechanical transformation, but some Lovable-specific patterns require manual fixes. Here's what to watch for.
+
+## Hardcoded API Calls
+
+### Lovable-Managed Endpoints
+
+Lovable apps often have hardcoded references to Lovable's managed backend:
+
+```tsx
+// ❌ Hardcoded Lovable endpoints (these won't work outside Lovable)
+const fetchData = async () => {
+  const response = await fetch('/api/projects');
+  // This endpoint is Lovable's managed API
+};
+
+const uploadImage = async (file) => {
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: file,
+  });
+  // This goes to Lovable's storage
+};
+```
+
+**Fix**: Update to your own API or Supabase:
+
+```tsx
+// ✅ Your own Supabase instance
+const fetchData = async () => {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*');
+  
+  if (error) throw error;
+  return data;
+};
+
+const uploadImage = async (file) => {
+  const { data } = await supabase
+    .storage
+    .from('images')
+    .upload(`public/${file.name}`, file);
+  
+  return data;
+};
+```
+
+### Supabase Client Configuration
+
+```tsx
+// ❌ Hardcoded Lovable Supabase client
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  'https://lovable-project.supabase.co', // Lovable's instance
+  'public-anon-key'
+);
+```
+
+**Fix**: Update to your own Supabase project:
+
+```tsx
+// ✅ Your own Supabase project
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL, // Your project URL
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+```
+
+## Environment Variables
+
+### Lovable-Specific Variables
+
+Lovable injects environment variables at build time that won't exist in your Next.js app:
+
+```bash
+# ❌ Won't work outside Lovable
+VITE_SUPABASE_URL=https://lovable-project.supabase.co
+VITE_SUPABASE_ANON_KEY=lovable-anon-key
+```
+
+**Fix**: Create your own `.env.local`:
+
+```bash
+# ✅ Your own variables (Next.js format)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+<Note>
+  **Prefix changes**:
+  - Vite uses `VITE_` prefix
+  - Next.js uses `NEXT_PUBLIC_` prefix for client-side env vars
+</Note>
+
+### Missing Environment Variables
+
+After conversion, your app won't have access to Lovable's injected variables. You'll need to:
+
+1. Create `.env.local` file
+2. Add your Supabase credentials
+3. Update any hardcoded URLs
+4. Restart dev server
+
+## Route Structure Changes
+
+### React Router → Next.js App Router
+
+The CLI converts React Router patterns, but you need to understand the new structure:
+
+```tsx
+// ❌ React Router setup (your old code)
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    children: [
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'profile/:id', element: <Profile /> },
+    ],
+  },
+]);
+```
+
+**Becomes**: File-based routing in `app/` directory
+
+```bash
+app/
+├── page.tsx              # / (home)
+├── layout.tsx            # Root layout
+├── dashboard/
+│   └── page.tsx          # /dashboard
+└── profile/
+    └── [id]/
+        └── page.tsx      # /profile/:id
+```
+
+### Route Parameters
+
+```tsx
+// ❌ React Router params
+import { useParams } from 'react-router-dom';
+
+const Profile = () => {
+  const { id } = useParams();
+  // id comes from URL
+};
+```
+
+```tsx
+// ✅ Next.js App Router params
+// File: app/profile/[id]/page.tsx
+export default function Profile({ params }: { params: { id: string } }) {
+  const { id } = params;
+  // id comes from params prop
+}
+```
+
+## Data Fetching Patterns
+
+### Client-Side Fetching in useEffect
+
+```tsx
+// ⚠️ Works but not optimal
+'use client';
+
+const Dashboard = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+  }, []);
+  
+  if (loading) return <div>Loading...</div>;
+  return <div>{data.map(...)}</div>;
+};
+```
+
+**Optimization**: Use Server Components for data fetching:
+
+```tsx
+// ✅ Server Component (no 'use client')
+// Direct data fetching on the server
+const Dashboard = async () => {
+  const data = await fetch('https://api.example.com/data', {
+    // This happens server-side, API key stays hidden
+    headers: { 'Authorization': `Bearer ${process.env.API_KEY}` }
+  });
+  
+  return <div>{data.map(item => <Item key={item.id} {...item} />)}</div>;
+};
+```
+
+### Realtime Subscriptions
+
+```tsx
+// ⚠️ Needs client directive for realtime
+'use client';
+
+import { useEffect } from 'react';
+
+const RealtimeComponent = () => {
+  useEffect(() => {
+    const subscription = supabase
+      .channel('table-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'items' },
+        (payload) => console.log(payload)
+      )
+      .subscribe();
+    
+    return () => subscription.unsubscribe();
+  }, []);
+};
+```
+
+## Authentication Patterns
+
+### Client-Side Auth State
+
+```tsx
+// ⚠️ Works but flashes loading state
+'use client';
+
+const ProtectedPage = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setLoading(false);
+    });
+  }, []);
+  
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>Please sign in</div>;
+  
+  return <div>Protected content</div>;
+};
+```
+
+**Better**: Use middleware for route protection:
+
+```tsx
+// middleware.ts
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+
+export async function middleware(req) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  // Protect dashboard routes
+  if (!session && req.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+  
+  return res;
+}
+
+export const config = {
+  matcher: ['/dashboard/:path*']
+};
+```
+
+## Database Queries
+
+### Hardcoded Table Names
+
+Make sure your table names match your Supabase schema:
+
+```tsx
+// ❌ May not work if table names differ
+const { data } = await supabase
+  .from('Projects') // Case sensitive!
+  .select('*');
+
+// ✅ Use exact table names from your schema
+const { data } = await supabase
+  .from('projects') // lowercase, matching your migrations
+  .select('*');
+```
+
+### RLS Policy Dependencies
+
+If you're still on Lovable's backend temporarily:
+
+```tsx
+// ⚠️ RLS policies on Lovable may block requests
+const { data, error } = await supabase
+  .from('private_data')
+  .select('*');
+
+// Check if RLS is blocking you
+if (error && error.code === 'PGRST301') {
+  console.log('RLS policy blocking access');
+}
+```
+
+**Fix**: Either migrate to your own Supabase with proper RLS, or use service role key for admin operations.
+
+## Styling Issues
+
+### Tailwind Classes
+
+Most Tailwind classes work, but check for:
+
+```css
+/* ❌ Custom Lovable classes may not exist */
+.bg-lovable-primary { /* Won't work */ }
+
+/* ✅ Replace with standard Tailwind or your config */
+.bg-blue-600 { /* Standard Tailwind */ }
+```
+
+### Font Imports
+
+```css
+/* ❌ Remove Lovable-specific font imports */
+@import url('https://lovable-fonts.example.com/custom-font.css');
+
+/* ✅ Use standard font imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+```
+
+## Image Handling
+
+### Standard img Tags
+
+```tsx
+// ⚠️ Works but not optimized
+<img src="/photo.jpg" alt="Photo" width={500} height={300} />
+```
+
+**Better**: Use Next.js Image component:
+
+```tsx
+// ✅ Optimized with Next.js Image
+import Image from 'next/image';
+
+<Image 
+  src="/photo.jpg" 
+  alt="Photo" 
+  width={500} 
+  height={300}
+  priority={true} // For above-fold images
+/>
+```
+
+### External Images
+
+```tsx
+// ❌ External images need domain config
+<Image src="https://external-site.com/photo.jpg" ... />
+
+// ✅ Add to next.config.js
+// next.config.js
+module.exports = {
+  images: {
+    domains: ['external-site.com'],
+  },
+};
+```
+
+## Build Errors
+
+### "window is not defined"
+
+**Cause**: Browser API used in Server Component
+
+```tsx
+// ❌ This fails in Server Component
+const width = window.innerWidth;
+```
+
+**Fix**: Add 'use client' or use dynamic import:
+
+```tsx
+// ✅ Option 1: Make it a Client Component
+'use client';
+
+const MyComponent = () => {
+  const width = window.innerWidth;
+  // ...
+};
+```
+
+```tsx
+// ✅ Option 2: Dynamic import with ssr: false
+import dynamic from 'next/dynamic';
+
+const ClientComponent = dynamic(() => import('./ClientComponent'), {
+  ssr: false,
+});
+```
+
+### "document is not defined"
+
+Same fix as above - either add 'use client' or ensure code runs only in browser.
+
+### "Cannot find module"
+
+**Cause**: Old import paths from Vite structure
+
+```tsx
+// ❌ Old Vite paths may not resolve
+import { Button } from '@/components/ui/button';
+// If @ alias isn't configured in Next.js
+```
+
+**Fix**: Update tsconfig.json or next.config.js:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+## Post-Conversion Checklist
+
+<Steps>
+  <Step title="Update environment variables">
+    Create `.env.local` with your Supabase credentials
+  </Step>
+  
+  <Step title="Update Supabase client config">
+    Change from Lovable's Supabase URL to your own
+  </Step>
+  
+  <Step title="Update API endpoints">
+    Change any hardcoded `/api/` calls to your own backend
+  </Step>
+  
+  <Step title="Review data fetching">
+    Consider moving fetch calls to Server Components
+  </Step>
+  
+  <Step title="Add middleware for auth">
+    Protect routes at the edge instead of client-side
+  </Step>
+  
+  <Step title="Test auth flow">
+    Verify login/logout works with your Supabase
+  </Step>
+  
+  <Step title="Update image components">
+    Replace `&lt;img&gt;` with Next.js `&lt;Image&gt;`
+  </Step>
+  
+  <Step title="Run the build">
+    `npm run build` to catch any remaining issues
+  </Step>
+  
+  <Step title="Test in production mode">
+    `npm start` after building to test the real thing
+  </Step>
+</Steps>
+
+## Common Error Messages
+
+### "Failed to fetch"
+
+**Cause**: API endpoint doesn't exist or CORS error
+**Fix**: Check that your Supabase URL is correct and accessible
+
+### "Auth session missing"
+
+**Cause**: Auth state not persisting or wrong Supabase project
+**Fix**: Verify you're connecting to the right Supabase instance
+
+### "Row level security violation"
+
+**Cause**: RLS policies blocking your query
+**Fix**: Check RLS policies in your Supabase dashboard, or use service role for admin ops
+
+### "relation does not exist"
+
+**Cause**: Table name typo or schema mismatch
+**Fix**: Check exact table names in Supabase, case-sensitive!
+
+<Info>
+  **Still stuck?** Check the [Troubleshooting](/cli/troubleshooting) guide or use our [Cloud Migration Extension](/cloud-migration) to move your backend too.
+</Info>

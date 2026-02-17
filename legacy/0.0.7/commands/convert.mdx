@@ -1,0 +1,404 @@
+---
+title: "Convert Command"
+description: "Convert individual React files to Next.js format"
+icon: "file-arrow-right"
+---
+
+<Info>
+The `convert` command consumes **1 file conversion credit** per file.
+Each new account starts with **10 free conversion credits**, and every migration credit purchased grants **10 additional conversion credits**.
+</Info>
+
+## Basic Usage
+
+```bash
+next-lovable convert <file> [options]
+```
+
+## Examples
+
+### Simple Conversion
+
+Convert a single file:
+
+```bash
+next-lovable convert src/components/Header.tsx
+```
+
+### Preview Changes First
+
+See what will change without modifying the file:
+
+```bash
+next-lovable convert src/components/Header.tsx --dry-run --show-diff
+```
+
+### Convert with Specific Transformations
+
+Apply only specific transformation types:
+
+```bash
+next-lovable convert MyComponent.tsx --transform router,client
+```
+
+### Save to Different Location
+
+Keep the original file intact:
+
+```bash
+next-lovable convert src/Header.tsx --output converted/Header.tsx
+```
+
+## Command Options
+
+<ParamField path="file" type="string" required>
+  The React file you want to convert. Supports `.tsx`, `.ts`, `.jsx`, and `.js` files.
+</ParamField>
+
+<ParamField path="--output, -o" type="string">
+  Output file path. If not specified, the original file is overwritten.
+  
+  **Examples:**
+  - `--output ./converted/MyComponent.tsx`
+  - `-o ../next-version/Header.tsx`
+</ParamField>
+
+<ParamField path="--transform, -t" type="string">
+  Comma-separated list of transformations to apply. Available options:
+  
+  - `router` - React Router to Next.js navigation
+  - `helmet` - React Helmet to Next.js Head
+  - `client` - Auto-detect and add 'use client' directive
+  - `context` - React Context provider migration
+  - `all` - Apply all transformations (default)
+  
+  **Examples:**
+  - `--transform router`
+  - `--transform router,client`
+  - `-t helmet,context`
+</ParamField>
+
+<ParamField path="--dry-run, -d" type="boolean">
+  Preview changes without modifying any files. Great for testing.
+  
+  **Example:**
+  ```bash
+  next-lovable convert Header.tsx --dry-run
+  ```
+</ParamField>
+
+<ParamField path="--show-diff" type="boolean">
+  Show a detailed before/after comparison. Must be used with `--dry-run`.
+  
+  **Example:**
+  ```bash
+  next-lovable convert Header.tsx --dry-run --show-diff
+  ```
+</ParamField>
+
+<ParamField path="--list" type="boolean">
+  List all available transformations and exit.
+  
+  **Example:**
+  ```bash
+  next-lovable convert --list
+  ```
+</ParamField>
+
+<ParamField path="--help, -h" type="boolean">
+  Show help information for the convert command.
+</ParamField>
+
+## Transformation Types
+
+### router
+
+Converts React Router usage to Next.js navigation:
+
+<CodeGroup>
+
+```tsx Before
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
+const MyComponent = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  return (
+    <div>
+      <Link to="/dashboard">Dashboard</Link>
+      <button onClick={() => navigate('/settings')}>Settings</button>
+      <p>Current: {location.pathname}</p>
+    </div>
+  );
+};
+```
+
+```tsx After
+'use client';
+
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
+const MyComponent = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  
+  return (
+    <div>
+      <Link href="/dashboard">Dashboard</Link>
+      <button onClick={() => router.push('/settings')}>Settings</button>
+      <p>Current: {pathname}</p>
+    </div>
+  );
+};
+```
+
+</CodeGroup>
+
+### helmet
+
+Converts React Helmet to Next.js Head:
+
+<CodeGroup>
+
+```tsx Before
+import { Helmet } from 'react-helmet';
+
+const PageMeta = ({ title, description }) => (
+  <Helmet>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </Helmet>
+);
+```
+
+```tsx After
+import Head from 'next/head';
+
+const PageMeta = ({ title, description }) => (
+  <Head>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </Head>
+);
+```
+
+</CodeGroup>
+
+### client
+
+Automatically detects when a component needs the `'use client'` directive:
+
+<CodeGroup>
+
+```tsx Before
+import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+};
+```
+
+```tsx After
+'use client';
+
+import React, { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+};
+```
+
+</CodeGroup>
+
+**Client directive is added when the component uses:**
+- React hooks (`useState`, `useEffect`, etc.)
+- Event handlers (`onClick`, `onChange`, etc.)
+- Browser APIs (`window`, `document`, `localStorage`)
+- Third-party libraries that require client-side execution
+
+### context
+
+Migrates React Context providers and consumers:
+
+<CodeGroup>
+
+```tsx Before
+import React, { createContext, useContext } from 'react';
+
+const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+```
+
+```tsx After
+'use client';
+
+import React, { createContext, useContext } from 'react';
+
+const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+```
+
+</CodeGroup>
+
+## Common Use Cases
+
+### Testing Before Full Migration
+
+Before migrating an entire project, test key components:
+
+```bash
+# Test your main App component
+next-lovable convert src/App.tsx --dry-run --show-diff
+
+# Test navigation components
+next-lovable convert src/components/Navigation.tsx --dry-run
+
+# Test components with routing
+find src -name "*.tsx" -exec next-lovable convert {} --dry-run \;
+```
+
+### Batch Processing
+
+Convert multiple files at once:
+
+```bash
+# Convert all files in a directory
+next-lovable convert src/components/*.tsx
+
+# Convert with specific transformations only
+next-lovable convert src/pages/*.tsx --transform router
+```
+
+### Incremental Migration
+
+Gradually migrate your codebase:
+
+```bash
+# Step 1: Convert routing components
+next-lovable convert src/App.tsx src/components/Navigation.tsx --transform router
+
+# Step 2: Convert components with state
+next-lovable convert src/components/Form.tsx --transform client
+
+# Step 3: Convert metadata components
+next-lovable convert src/components/SEO.tsx --transform helmet
+```
+
+## Output Examples
+
+### Dry Run Output
+
+```bash
+$ next-lovable convert Header.tsx --dry-run
+
+✓ Analyzed Header.tsx
+✓ Found React Router usage - will convert to Next.js navigation
+✓ Detected client-side hooks - will add 'use client' directive
+✓ No changes needed for imports
+
+Summary:
+- 3 transformations will be applied
+- File size will change from 1.2KB to 1.3KB
+- No breaking changes detected
+
+Use --show-diff to see detailed changes
+```
+
+### Diff Output
+
+```bash
+$ next-lovable convert Header.tsx --dry-run --show-diff
+
+--- Header.tsx (original)
++++ Header.tsx (converted)
+@@ -1,4 +1,6 @@
++'use client';
++
+ import React from 'react';
+-import { Link, useNavigate } from 'react-router-dom';
++import Link from 'next/link';
++import { useRouter } from 'next/navigation';
+
+@@ -6,7 +8,7 @@
+ const Header = () => {
+-  const navigate = useNavigate();
++  const router = useRouter();
+   
+   return (
+-    <Link to="/dashboard">Dashboard</Link>
++    <Link href="/dashboard">Dashboard</Link>
+   );
+ };
+```
+
+## Tips & Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Always Preview First" icon="eye">
+    Use `--dry-run --show-diff` to see changes before applying them
+  </Card>
+  <Card title="Test Individual Transformations" icon="flask">
+    Use `--transform` to apply specific changes and understand what each does
+  </Card>
+  <Card title="Keep Backups" icon="shield">
+    Use `--output` to save converted files separately when testing
+  </Card>
+  <Card title="Start Small" icon="seedling">
+    Begin with simple components before tackling complex files
+  </Card>
+</CardGroup>
+
+## Error Handling
+
+The convert command includes robust error handling:
+
+- **Syntax errors**: The tool will report and skip files with syntax errors
+- **Unsupported patterns**: Complex patterns are reported for manual review
+- **File permissions**: Clear error messages for permission issues
+- **Invalid options**: Helpful suggestions for incorrect command usage
+
+## What's Next?
+
+<Steps>
+  <Step title="Try More Examples">
+    Explore [real-world conversion examples](/0.0.7/examples/basic-conversion)
+  </Step>
+  <Step title="Learn Full Migration">
+    Ready for complete project migration? See the [migrate command](/0.0.7/commands/migrate)
+  </Step>
+  <Step title="Read Best Practices">
+    Check out our [best practices guide](/0.0.7/guides/best-practices)
+  </Step>
+</Steps>

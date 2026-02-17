@@ -1,0 +1,317 @@
+---
+title: "What's Included"
+description: "Complete breakdown of what's migrated from Lovable's Supabase to your own"
+icon: "list-check"
+---
+
+# What's Included
+
+Every component of your Lovable backend is migrated to your own Supabase project. Here's the complete breakdown.
+
+## Database Migration
+
+<AccordionGroup>
+  <Accordion title="Schema Structure">
+    **All database objects recreated:**
+    - Tables (all 370 of them, if that's your case)
+    - Columns with correct data types
+    - Primary keys
+    - Foreign key relationships
+    - Unique constraints
+    - Check constraints
+    - Default values
+    - Auto-increment sequences
+    
+    **What stays identical:**
+    - Table names
+    - Column names
+    - Data types
+    - Relationships
+    
+    **What we validate:**
+    - Row counts match
+    - Foreign keys resolve correctly
+    - Constraints are enforced
+  </Accordion>
+  
+  <Accordion title="Data Integrity">
+    **Data transferred with validation:**
+    - All rows migrated
+    - Binary data preserved (images, files metadata)
+    - JSON/JSONB fields intact
+    - Arrays maintained
+    - Timestamps converted correctly
+    - UUIDs preserved
+    
+    **Validation process:**
+    - Row count verification
+    - Sample data checks
+    - Relationship integrity tests
+    - Constraint validation
+  </Accordion>
+  
+  <Accordion title="Special Data Types">
+    Complex types handled correctly:
+    - `uuid` → Preserved
+    - `timestamp with time zone` → Maintained
+    - `json` / `jsonb` → Intact
+    - Arrays (`text[]`, `int[]`) → Preserved
+    - Custom enums → Recreated
+    - `geometry` (PostGIS) → Migrated with extension
+  </Accordion>
+  
+  <Accordion title="Indexes & Performance">
+    Database performance preserved:
+    - B-tree indexes
+    - GIN indexes (for JSON/text search)
+    - GiST indexes (for PostGIS)
+    - Composite indexes
+    - Partial indexes
+    - Index names maintained
+  </Accordion>
+</AccordionGroup>
+
+## Row Level Security (RLS)
+
+<Card title="All Policies Migrated" icon="shield-check">
+  Every RLS policy from your Lovable database is ported to your new Supabase project.
+</Card>
+
+### What Gets Ported
+
+<AccordionGroup>
+  <Accordion title="Policy Definitions">
+    **Complete policy recreation:**
+    - Policy names
+    - Target tables
+    - Operation types (SELECT, INSERT, UPDATE, DELETE)
+    - Using expressions (the `USING` clause)
+    - With check expressions (the `WITH CHECK` clause)
+    - Policy roles
+    
+    ```sql
+    -- Example policy that gets migrated
+    CREATE POLICY "Users can only see their own data" 
+    ON public.profiles 
+    FOR SELECT 
+    USING (auth.uid() = user_id);
+    ```
+  </Accordion>
+  
+  <Accordion title="Security Functions">
+    Custom functions referenced in policies:
+    - `auth.uid()` calls
+    - `auth.role()` references
+    - Custom security functions
+    - Helper functions for complex logic
+  </Accordion>
+  
+  <Accordion title="Policy Testing">
+    **We verify every policy works:**
+    - Test queries as different users
+    - Verify access restrictions
+    - Check insert/update permissions
+    - Validate delete protections
+    - Document any edge cases
+  </Accordion>
+</AccordionGroup>
+
+## Authentication Migration
+
+<Warning>
+  **Important**: User sessions cannot be migrated. Password resets required.
+</Warning>
+
+### What Transfers
+
+<AccordionGroup>
+  <Accordion title="User Accounts">
+    **Account metadata migrated:**
+    - User IDs (UUIDs preserved)
+    - Email addresses
+    - Email confirmation status
+    - Phone numbers (if used)
+    - User metadata (custom fields)
+    - Account creation timestamps
+    - Last sign-in timestamps
+    - OAuth provider identities
+    
+    **What doesn't transfer:**
+    - Passwords (hashed, cannot be decrypted)
+    - Current sessions
+    - Refresh tokens
+    - MFA settings (must be reconfigured)
+  </Accordion>
+  
+  <Accordion title="OAuth Connections">
+    **Social auth preserved:**
+    - Google OAuth links
+    - GitHub connections
+    - Apple sign-in
+    - Any other configured providers
+    
+    **What we do:**
+    - Recreate OAuth app configurations
+    - Update callback URLs
+    - Test provider connections
+    - Verify identity linking
+  </Accordion>
+  
+  <Accordion title="Password Reset Flow">
+    **Seamless transition strategy:**
+    - Pre-migration email to users
+    - Post-migration reset trigger
+    - Magic link option for immediate access
+    - Clear communication templates
+  </Accordion>
+</AccordionGroup>
+
+## Edge Functions
+
+<AccordionGroup>
+  <Accordion title="Function Migration">
+    **Serverless functions transferred:**
+    - Function code
+    - Environment variables
+    - Secrets/keys
+    - Import maps
+    - Dependencies
+    
+    **What we handle:**
+    - Code extraction
+    - Dependency resolution
+    - Environment setup
+    - Deployment to your project
+    - Testing and validation
+  </Accordion>
+  
+  <Accordion title="Triggers & Hooks">
+    **Database triggers preserved:**
+    - Insert triggers
+    - Update triggers
+    - Delete triggers
+    - Function bindings
+    - Trigger conditions
+  </Accordion>
+</AccordionGroup>
+
+## Database Functions
+
+<AccordionGroup>
+  <Accordion title="PostgreSQL Functions">
+    **Custom functions migrated:**
+    - Function definitions
+    - Parameters and return types
+    - PL/pgSQL logic
+    - SQL functions
+    - Trigger functions
+    
+    ```sql
+    -- Example function that gets migrated
+    CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+    BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+    END;
+    $$ language 'plpgsql';
+    ```
+  </Accordion>
+  
+  <Accordion title="Extensions">
+    **PostgreSQL extensions:**
+    - `uuid-ossp` (UUID generation)
+    - `pgcrypto` (cryptographic functions)
+    - `postgis` (geographic data)
+    - `pg_trgm` (trigram matching)
+    - Any other enabled extensions
+  </Accordion>
+</AccordionGroup>
+
+## Realtime Subscriptions
+
+<CardGroup cols={2}>
+  <Card title="Realtime Configuration" icon="broadcast-tower">
+    - Publication settings
+    - Table subscriptions
+    - Event filters
+    - Broadcast configuration
+  </Card>
+  
+  <Card title="Client Configuration" icon="code">
+    - Channel setup
+    - Event handlers
+    - Reconnection logic
+    - Filter policies
+  </Card>
+</CardGroup>
+
+## Post-Migration Deliverables
+
+After migration completes, you receive:
+
+<Check>
+  - [ ] **Migration Report**: Complete audit of what was migrated
+  - [ ] **Schema Documentation**: ER diagrams and table descriptions
+  - [ ] **RLS Policy Summary**: All security rules documented
+  - [ ] **Connection Strings**: Database, API URLs
+  - [ ] **Environment Variables**: Complete `.env` file for your app
+  - [ ] **Testing Results**: Validation that everything works
+  - [ ] **User Communication Templates**: Password reset emails
+  - [ ] **Rollback Plan**: Instructions if you need to revert
+</Check>
+
+## What's NOT Included
+
+Be aware of these limitations:
+
+<AccordionGroup>
+  <Accordion title="User Passwords">
+    Cannot be migrated (hashed, one-way encryption).
+    **Workaround**: Password reset flow
+  </Accordion>
+  
+  <Accordion title="Active Sessions">
+    Current user sessions don't transfer.
+    **Workaround**: Users sign in again
+  </Accordion>
+  
+  <Accordion title="Lovable-Specific Integrations">
+    Any proprietary Lovable services.
+    **Workaround**: Replace with standard alternatives
+  </Accordion>
+  
+  <Accordion title="Custom Infrastructure">
+    External services not part of Supabase.
+    **Workaround**: Migrate separately or keep separate
+  </Accordion>
+</AccordionGroup>
+
+## Validation Checklist
+
+We verify every component:
+
+| Component | Validation Method |
+|-----------|------------------|
+| Tables | Row count comparison |
+| Data | Sample verification |
+| Relationships | Foreign key checks |
+| RLS Policies | Permission testing |
+| Auth Users | Account verification |
+| Edge Functions | Execution tests |
+| Functions | Output validation |
+
+## Timeline
+
+Typical migration timeline:
+
+- **Small app** (10-50 tables): 1-2 days
+- **Medium app** (50-200 tables): 2-3 days  
+- **Large app** (200+ tables): 3-5 days
+- **Complex app** (370+ tables): 5-7 days
+
+Includes: discovery, migration, testing, and handoff.
+
+<Info>
+  Ready to start? [Set up your Supabase project](/cloud-migration/supabase-setup) or learn [why this costs 3 credits](/cloud-migration/why-3-credits).
+</Info>

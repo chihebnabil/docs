@@ -1,0 +1,237 @@
+---
+title: "Supabase Setup"
+description: "Preparing your new Supabase project for migration"
+icon: "gear"
+---
+
+# Supabase Setup
+
+Before we begin the migration, you need a Supabase project ready to receive your data. Here's how to set it up.
+
+## Step 1: Create Your Supabase Account
+
+<Steps>
+  <Step title="Sign up at supabase.com">
+    Go to [supabase.com](https://supabase.com) and create an account.
+    
+    **Recommendation**: Use the same email as your Lovable account for easier tracking.
+  </Step>
+  
+  <Step title="Verify your account">
+    Check your email and click the verification link.
+  </Step>
+  <Step title="Set up billing">
+    Choose your plan:
+    - **Free Tier**: Good for testing (500MB database, 1GB storage)
+    - **Pro ($25/month)**: Production-ready (8GB database, 100GB storage)
+    - **Team/Enterprise**: Contact Supabase for larger needs
+  </Step>
+</Steps>
+
+## Step 2: Create a New Project
+
+<Steps>
+  <Step title="Click 'New Project'">
+    From your Supabase dashboard, click the "New Project" button.
+  </Step>
+  
+  <Step title="Configure your project">
+    **Organization**: Your company or personal org
+    
+    **Project Name**: Choose something descriptive
+    - Good: `myapp-production`
+    - Good: `crm-migrated`
+    - Avoid: `test`, `new-project`
+    
+    **Database Password**: 
+    - Generate a strong password
+    - Save it in your password manager
+    - You'll need this for direct database access
+    
+    **Region**: 
+    - Choose closest to your users
+    - Consider data residency requirements
+    - Common choices: US East (N. Virginia), EU (Frankfurt), Asia (Singapore)
+  </Step>
+  
+  <Step title="Wait for provisioning">
+    Supabase will create your project. This takes 2-3 minutes.
+    
+    You'll see a loading screen—don't close it.
+  </Step>
+</Steps>
+
+## Step 3: Gather Connection Information
+
+Once your project is created, we need these details:
+
+<CardGroup cols={2}>
+  <Card title="Project URL" icon="link">
+    **Location**: Project Settings → API
+    
+    **Format**: `https://[project-ref].supabase.co`
+    
+    **Example**: `https://abc123def456.supabase.co`
+    
+    **We need this for**: API calls, storage access
+  </Card>
+  
+  <Card title="Anon/Public Key" icon="key">
+    **Location**: Project Settings → API → Project API Keys
+    
+    **Format**: `eyJhbGciOiJIUzI1NiIs...`
+    
+    **We need this for**: Client-side authentication
+  </Card>
+  
+  <Card title="Service Role Key" icon="key">
+    **Location**: Project Settings → API → Project API Keys
+    
+    **⚠️ Keep this secret!** Never expose in client code.
+    
+    **We need this for**: Admin operations during migration
+  </Card>
+  
+  <Card title="Database Password" icon="lock">
+    **You created this** during project setup.
+    
+    **We need this for**: Direct PostgreSQL access
+  </Card>
+</CardGroup>
+
+<Info>
+  **Share securely**: Send these credentials via encrypted channel (1Password, secure email, or scheduled call). Never post in public channels.
+</Info>
+
+## Step 4: Configure Your Project
+
+### Enable Required Extensions
+
+Go to **Database → Extensions** and enable these (if your app uses them):
+
+<AccordionGroup>
+  <Accordion title="Common Extensions">
+    - `uuid-ossp` - UUID generation (most apps need this)
+    - `pgcrypto` - Cryptographic functions
+    - `pg_trgm` - Trigram matching for search
+  </Accordion>
+  
+  <Accordion title="Advanced Extensions">
+    - `postgis` - Geographic data
+    - `pgvector` - Vector similarity search
+    - `pg_stat_statements` - Query performance
+  </Accordion>
+</AccordionGroup>
+
+### Set Up Authentication Providers
+
+If you use social login:
+
+<Steps>
+  <Step title="Go to Authentication → Providers">
+    Enable the providers your app uses (Google, GitHub, Apple, etc.)
+  </Step>
+  
+  <Step title="Configure OAuth Apps">
+    For each provider:
+    - Create OAuth app in provider console
+    - Add callback URL: `https://[project-ref].supabase.co/auth/v1/callback`
+    - Copy Client ID and Secret to Supabase
+  </Step>
+  
+  <Step title="Test the flow">
+    We'll verify OAuth works during migration testing.
+  </Step>
+</Steps>
+
+### Configure Storage (Optional)
+
+If you want specific storage settings:
+
+<Steps>
+  <Step title="Go to Storage → Policies">
+    Default policies are created automatically, but you can customize.
+  </Step>
+  
+  <Step title="Set up CORS (if needed)">
+    For client-side uploads from specific domains.
+  </Step>
+  
+  <Step title="Configure CDN">
+    Supabase provides CDN by default. Contact them for custom domains.
+  </Step>
+</Steps>
+
+## Step 5: Prepare for Migration
+
+<Check>
+  - [ ] Supabase account created
+  - [ ] New project provisioned
+  - [ ] Region selected (close to users)
+  - [ ] Required extensions enabled
+  - [ ] Auth providers configured (if using OAuth)
+  - [ ] Service role key secured
+  - [ ] Database password saved
+  - [ ] Project URL documented
+</Check>
+
+## Security Checklist
+
+<Warning>
+  **Before sharing credentials with us:**
+</Warning>
+
+<Steps>
+  <Step title="Enable Row Level Security">
+    We'll set this up during migration, but verify it's available.
+    
+    Go to **Database → Tables** and check that new tables will have RLS.
+  </Step>
+  
+  <Step title="Review API Keys">
+    - **Anon key**: Safe for client-side code
+    - **Service role key**: NEVER in client code, only server-side
+  </Step>
+  
+  <Step title="Set up backup policy">
+    Supabase automatically backs up Pro+ projects. 
+    
+    Go to **Database → Backups** to verify schedule.
+  </Step>
+  
+  <Step title="Enable MFA for your account">
+    Protect your Supabase dashboard access.
+    
+    Go to **Account Settings → Security**.
+  </Step>
+</Steps>
+
+## What Happens Next
+
+Once you've completed setup:
+
+1. **Send us your credentials** (securely)
+2. **We'll schedule the migration** (usually within 48 hours)
+3. **We'll run a test migration** on a subset of data
+4. **You'll review the results** and approve
+5. **We'll execute the full migration**
+6. **You'll update your app** with new connection strings
+7. **We'll monitor for 48 hours** to ensure stability
+
+## Post-Migration Connection Details
+
+After migration, you'll need to update your app with these values:
+
+```bash
+# Your new Supabase project details
+NEXT_PUBLIC_SUPABASE_URL=https://[your-project-ref].supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
+
+# Direct database connection (if needed)
+DATABASE_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+```
+
+<Info>
+  **Questions about setup?** Contact us at support@nextlovable.com or check [Supabase's documentation](https://supabase.com/docs).
+</Info>

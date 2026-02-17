@@ -1,0 +1,311 @@
+---
+title: "Migration Process"
+description: "Step-by-step walkthrough of the Cloud Migration process"
+icon: "arrow-right-arrow-left"
+---
+
+# Migration Process
+
+Here's exactly what happens during your Cloud Migration. No surprises, no black boxes.
+
+## Pre-Migration Phase
+
+<Steps>
+  <Step title="Discovery Call (30 min)">
+    **Before we start, we understand your app:**
+    
+    - Table count and complexity
+    - RLS policy overview
+    - Auth configuration
+    - Edge Functions
+    - Custom requirements
+    - Timeline expectations
+    
+    **Deliverable**: Migration plan document
+  </Step>
+  
+  <Step title="Access Setup">
+    **You provide secure access:**
+    
+    - Lovable project details (read-only access)
+    - Supabase credentials (from your new project)
+    - Any special configurations
+    - Emergency contact information
+    
+    **Security**: All credentials encrypted, access logged, rotated post-migration
+  </Step>
+  
+  <Step title="Backup Creation">
+    **We create safety nets:**
+    
+    - Full database dump from Lovable
+    - Auth user export
+    - Configuration snapshots
+    
+    **These backups stay with you** for 30 days post-migration
+  </Step>
+</Steps>
+
+## Migration Execution
+
+<Steps>
+  <Step title="Schema Analysis (2-4 hours)">
+    **Deep dive into your database:**
+    
+    1. **Table inventory**
+       - List all 370 tables (or however many you have)
+       - Document relationships
+       - Identify circular dependencies
+       - Map foreign key chains
+    
+    2. **Constraint mapping**
+       - Primary keys
+       - Foreign keys
+       - Unique constraints
+       - Check constraints
+       - Exclusion constraints
+    
+    3. **Index audit**
+       - All indexes documented
+       - Usage patterns analyzed
+       - Performance critical indexes flagged
+    
+    4. **Dependency graph**
+       - Visual map of table relationships
+       - Migration order determined
+       - Risk points identified
+    
+    **Deliverable**: Schema documentation with ER diagram
+  </Step>
+  
+  <Step title="Test Migration (4-8 hours)">
+    **Practice run on subset:**
+    
+    1. **Create test tables** (10-20 representative tables)
+    2. **Migrate test data** (1000-5000 rows)
+    3. **Verify constraints** (foreign keys, uniqueness)
+    4. **Test RLS policies** (security validation)
+    5. **Check data integrity** (row counts, checksums)
+    6. **Document issues** (edge cases, problems)
+    
+    **Why test first?** Catch problems before touching production data
+  </Step>
+  
+  <Step title="Schema Migration (2-4 hours)">
+    **Recreate database structure:**
+    
+    ```sql
+    -- Example of what we generate
+    CREATE TABLE public.profiles (
+      id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+      user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+      full_name text,
+      avatar_url text,
+      created_at timestamp with time zone DEFAULT now(),
+      updated_at timestamp with time zone DEFAULT now()
+    );
+    
+    CREATE INDEX idx_profiles_user_id ON public.profiles(user_id);
+    ```
+    
+    **Order matters**:
+    1. Extensions and custom types
+    2. Base tables (no foreign keys)
+    3. Junction/link tables
+    4. Tables with foreign keys (dependency order)
+    5. Indexes
+    6. Triggers
+    7. Functions
+    
+    **Validation**: Every table created, every constraint applied
+  </Step>
+  
+  <Step title="Data Migration (4-12 hours)">
+    **The heavy lifting:**
+    
+    **Strategy by table size**:
+    
+    | Table Size | Method | Time |
+    |------------|--------|------|
+    | < 10K rows | Single INSERT | Minutes |
+    | 10K-100K rows | Batched INSERT (1000 row chunks) | 15-30 min |
+    | 100K-1M rows | COPY command + validation | 1-2 hours |
+    | > 1M rows | Parallel streams + checkpointing | 2-4 hours |
+    
+    **Process**:
+    1. Extract from Lovable (read-only, no downtime)
+    2. Transform (data type conversions if needed)
+    3. Load into your Supabase
+    4. Verify (row counts, sample checks)
+    5. Repeat for next batch
+    
+    **Handling issues**:
+    - Foreign key violations → Fix order or temporarily disable
+    - Data type mismatches → Convert/transform
+    - Timeout errors → Reduce batch size
+    - Connection drops → Resume from checkpoint
+  </Step>
+  
+  <Step title="RLS Policy Migration (2-4 hours)">
+    **Security model transfer:**
+    
+    ```sql
+    -- Extract from Lovable
+    SELECT * FROM pg_policies WHERE schemaname = 'public';
+    
+    -- Recreate in your project
+    CREATE POLICY "Users can view own profile" 
+    ON public.profiles FOR SELECT 
+    USING (auth.uid() = user_id);
+    ```
+    
+    **Steps**:
+    1. Extract all policies from source
+    2. Analyze policy logic
+    3. Recreate in target (in dependency order)
+    4. Enable RLS on all tables
+    5. Test each policy with real queries
+    6. Document any logic changes
+    
+    **Testing approach**:
+    - Sign in as test users
+    - Attempt SELECT/INSERT/UPDATE/DELETE
+    - Verify access is correctly restricted
+    - Check edge cases (null users, deleted records)
+  </Step>
+  
+  <Step title="Auth Migration (1-2 hours)">
+    **User account transfer:**
+    
+    **What transfers**:
+    - User IDs (UUIDs preserved)
+    - Email addresses
+    - Email confirmation status
+    - User metadata (JSONB)
+    - OAuth identities
+    - Account creation dates
+    
+    **What doesn't** (technical limitation):
+    - Passwords (hashed, can't decrypt)
+    - Active sessions
+    - MFA settings
+    
+    **Process**:
+    1. Export user list from Lovable
+    2. Import users to your Supabase
+    3. Preserve OAuth identities
+    4. Set up password reset flow
+    5. Configure email templates
+    6. Test sign-in with sample accounts
+    
+    **Communication plan**:
+    - Pre-migration email: "We're upgrading our infrastructure"
+    - Post-migration email: "Please reset your password"
+    - FAQ page for common questions
+  </Step>
+  
+  <Step title="Edge Functions & Triggers (1-2 hours)">
+    **Serverless logic migration:**
+    
+    **Edge Functions**:
+    1. Extract function code
+    2. Resolve dependencies
+    3. Update environment variables
+    4. Deploy to your project
+    5. Test execution
+    
+    **Database Triggers**:
+    1. Extract trigger definitions
+    2. Migrate trigger functions
+    3. Recreate triggers in dependency order
+    4. Test trigger execution
+    5. Verify business logic
+    
+    **Validation**:
+    - Functions execute without errors
+    - Environment variables resolved
+    - Secrets properly configured
+    - Triggers fire correctly
+  </Step>
+</Steps>
+
+## Post-Migration Phase
+
+<Steps>
+  <Step title="Validation & Testing (2-4 hours)">
+    **Comprehensive verification:**
+    
+    **Data integrity checks**:
+    - [ ] Row counts match for every table
+    - [ ] Sample data verified (100+ random rows)
+    - [ ] Foreign keys resolve correctly
+    - [ ] No orphaned records
+    - [ ] Constraints enforced
+    
+    **Security validation**:
+    - [ ] All RLS policies active
+       - [ ] Policies tested with real users
+    - [ ] No unauthorized access possible
+    
+    **Functionality testing**:
+    - [ ] User sign-up works
+    - [ ] User sign-in works
+    - [ ] OAuth providers connect
+    - [ ] Realtime subscriptions work
+    - [ ] Edge functions execute
+    
+    **Performance baseline**:
+    - [ ] Query performance measured
+    - [ ] Index usage verified
+    - [ ] Slow queries identified
+  </Step>
+  
+  <Step title="Documentation Handoff (1 hour)">
+    **Complete migration package:**
+    
+    You receive:
+    - **Migration Report**: What was migrated, validation results
+    - **Schema Documentation**: ER diagram, table descriptions
+    - **RLS Policy Summary**: All security rules documented
+    - **Connection Details**: All URLs and keys
+    - **Environment File**: Ready-to-use `.env.local`
+    - **Testing Results**: Validation logs
+    - **User Communication Templates**: Email copy for your users
+    - **Rollback Instructions**: How to revert if needed
+  </Step>
+  
+  <Step title="Monitoring Period (48 hours)">
+    **We stay on standby:**
+    
+    - Monitor error logs
+    - Watch for performance issues
+    - Provide hotfixes if needed
+  </Step>
+</Steps>
+
+## Timeline Summary
+
+| Phase | Duration | Cumulative |
+|-------|----------|------------|
+| Pre-migration | 1 day | Day 1 |
+| Schema analysis | 4 hours | Day 1-2 |
+| Test migration | 8 hours | Day 2 |
+| Full migration | 12-24 hours | Day 3-4 |
+| Validation | 4 hours | Day 4 |
+| Handoff | 1 hour | Day 4 |
+| Monitoring | 48 hours | Days 4-6 |
+
+**Total: 4-6 days from kickoff to completion**
+
+## Communication During Migration
+
+You'll receive updates at each milestone:
+
+- ✅ Schema analysis complete
+- ✅ Test migration successful
+- 🔄 Full migration in progress (progress %)
+- ✅ Data migration complete
+- ✅ RLS policies migrated
+- ✅ Auth system ready
+- ✅ Validation passed
+- 📋 Documentation delivered

@@ -12,55 +12,95 @@
     "light": "#93c5fd",
     "dark": "#1e40af"
   },
+  "anchors": [
+    {
+      "name": "CLI",
+      "icon": "terminal",
+      "url": "cli"
+    },
+    {
+      "name": "Cloud Migration",
+      "icon": "cloud",
+      "url": "cloud-migration"
+    },
+    {
+      "name": "Prerendering",
+      "icon": "bolt",
+      "url": "prerendering"
+    },
+    {
+      "name": "Pricing",
+      "icon": "credit-card",
+      "url": "pricing"
+    }
+  ],
   "navigation": {
-    "versions": [
+    "tabs": [
       {
-        "version": "0.0.6",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Choose Your Migration",
             "pages": [
-              "0.0.6/index",
-              "0.0.6/installation",
-              "0.0.6/quick-start"
+              "index"
             ]
           },
           {
-            "group": "Commands",
+            "group": "Quick Start",
             "pages": [
-              "0.0.6/commands/migrate"
+              "cli/index",
+              "cli/installation",
+              "cli/quick-start",
+              "cli/what-gets-converted",
+              "cli/what-breaks",
+              "cli/convert",
+              "cli/migrate",
+              "cli/troubleshooting"
             ]
           },
           {
-            "group": "Guides",
+            "group": "Full Backend Migration",
             "pages": [
-              "0.0.6/guides/troubleshooting"
+              "cloud-migration/index",
+              "cloud-migration/what-included",
+              "cloud-migration/why-3-credits",
+              "cloud-migration/supabase-setup",
+              "cloud-migration/migration-process",
+              "cloud-migration/rls-policies",
+              "cloud-migration/auth-migration"
+            ]
+          },
+          {
+            "group": "Production Optimization",
+            "pages": [
+              "prerendering/index",
+              "prerendering/seo-recovery",
+              "prerendering/setup-guide",
+              "prerendering/configuration",
+              "prerendering/verification"
+            ]
+          },
+          {
+            "group": "Pricing & Credits",
+            "pages": [
+              "pricing/index",
+              "pricing/credit-system",
+              "pricing/upgrade-paths"
             ]
           }
         ]
       },
       {
-        "version": "0.0.7+",
+        "tab": "Legacy Versions",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Version 0.0.6",
             "pages": [
-              "0.0.7/index",
-              "0.0.7/installation",
-              "0.0.7/quick-start"
-            ]
-          },
-          {
-            "group": "Commands",
-            "pages": [
-              "0.0.7/commands/convert",
-              "0.0.7/commands/migrate"
-            ]
-          },
-          {
-            "group": "Guides",
-            "pages": [
-              "0.0.7/guides/troubleshooting"
+              "legacy/0.0.6/index",
+              "legacy/0.0.6/installation",
+              "legacy/0.0.6/quick-start",
+              "legacy/0.0.6/commands/migrate",
+              "legacy/0.0.6/guides/troubleshooting"
             ]
           }
         ]

@@ -1,0 +1,303 @@
+---
+title: "Why 3 Credits?"
+description: "Understanding the value behind Cloud Migration pricing"
+icon: "coins"
+---
+
+# Why 3 Credits Costs 3x More
+
+<Card title="When you have 370 tables, you're not buying a script. You're buying insurance." icon="shield">
+  Complex migrations aren't about running a script—they're about preserving relationships, security policies, and business logic that grew organically. One wrong move and months of user data could be at risk.
+</Card>
+
+## The Real Cost Breakdown
+
+Here's where your 3 credits ($237) go:
+
+<Steps>
+  <Step title="Analysis & Planning (0.5 credits)">
+    **Before touching anything, we map the battlefield:**
+    
+    - Schema inventory (every table, column, relationship)
+    - RLS policy audit (security vulnerabilities)
+    - Data volume assessment (GB to transfer)
+    - Complexity scoring (simple vs. nested relationships)
+    - Risk identification (what could break)
+    - Migration strategy (order of operations)
+    
+    **Time invested**: 2-4 hours of expert analysis
+  </Step>
+  
+  <Step title="Schema Migration (0.5 credits)">
+    **Recreating your database structure:**
+    
+    - Table definitions (potentially hundreds of create statements)
+    - Foreign key relationships (mapping web of connections)
+    - Constraints & indexes (performance preservation)
+    - Custom types & enums (PostgreSQL specifics)
+    - Triggers & functions (business logic)
+    
+    **What goes wrong without this**: 
+    - Foreign key conflicts
+    - Constraint violations
+    - Data type mismatches
+    - Index corruption
+  </Step>
+  
+  <Step title="Data Transfer (1 credit)">
+    **The heavy lifting:**
+    
+    - Batch extraction (not dumping everything at once)
+    - Relationship preservation (parent→child integrity)
+    - Binary data handling (images, files)
+    - JSON/JSONB integrity (complex nested data)
+    - Validation checks (every row verified)
+    - Error recovery (what if transfer fails mid-way?)
+    
+    **Time invested**: 4-8 hours of careful transfer
+  </Step>
+  
+  <Step title="Security Migration (0.5 credits)">
+    **RLS policies—where most migrations fail:**
+    
+    - Policy extraction (parsing SQL logic)
+    - Security function migration (custom auth logic)
+    - Permission testing (verify it actually works)
+    - Vulnerability audit (are you more secure or less?)
+    - Edge case testing (what about null users?)
+    
+    **Why this matters**: 
+    - One broken policy = data exposure
+    - One missing policy = unauthorized access
+    - One logic error = app broken for users
+  </Step>
+  
+  <Step title="Auth Migration (0.5 credits)">
+    **User experience preservation:**
+    
+    - Account migration (metadata, OAuth links)
+    - Password reset strategy (communication plan)
+    - Testing user flows (sign-in, sign-up, recovery)
+    
+    **The human factor**:
+    - Users need to reset passwords
+    - Email templates need updating
+    - Support documentation required
+  </Step>
+</Steps>
+
+## What Could Go Wrong (DIY Migration)
+
+<AccordionGroup>
+  <Accordion title="Data Corruption">
+    **Scenario**: You dump and restore without checking foreign keys.
+    
+    **Result**: Orphaned records, broken relationships, app crashes.
+    
+    **Cost to fix**: 40+ hours of manual cleanup, lost user trust.
+  </Accordion>
+  
+  <Accordion title="Security Exposure">
+    **Scenario**: RLS policies don't transfer correctly.
+    
+    **Result**: Users see each other's data. GDPR violation. Legal liability.
+    
+    **Cost to fix**: Incident response, legal review, reputation damage.
+  </Accordion>
+  
+  <Accordion title="Auth System Down">
+    **Scenario**: OAuth providers not reconfigured properly.
+    
+    **Result**: Users can't log in. Support tickets flood in. Churn spikes.
+    
+    **Cost to fix**: Emergency hotfix, 24/7 support, lost revenue.
+  </Accordion>
+  
+  <Accordion title="Performance Degradation">
+    **Scenario**: Indexes not recreated. Queries that took 50ms now take 5s.
+    
+    **Result**: App feels broken. Users leave. SEO rankings drop.
+    
+    **Cost to fix**: Performance audit, query optimization, re-indexing.
+  </Accordion>
+  
+  <Accordion title="Partial Migration">
+    **Scenario**: You migrate 300 tables but miss 70. 
+    
+    **Result**: App works... mostly. Features randomly break. Data inconsistency.
+    
+    **Cost to fix**: Weeks of debugging, user complaints, patchwork fixes.
+  </Accordion>
+</AccordionGroup>
+
+## Why Complex Migrations Need Expert Handling
+
+<Card title="When Your Database Has 370 Tables, You're Buying Insurance" icon="shield">
+  Complex migrations aren't just about moving data—they're about preserving relationships, security, and business logic that grew organically over months or years.
+</Card>
+
+**What makes migrations complex**:
+
+1. **Deep Relationships**: Foreign keys spanning dozens of tables
+   - One wrong order = orphaned records
+   - Circular dependencies require careful sequencing
+   - Self-referencing tables need special handling
+
+2. **RLS Policy Complexity**: Security rules that reference multiple tables
+   - Policies spanning junction tables
+   - Custom security functions
+   - Permission dependencies
+
+3. **Business Logic in Database**: Functions and triggers
+   - Automated workflows
+   - Data validation rules
+   - Audit logging
+
+4. **Scale Matters**:
+   - More tables = more things that can go wrong
+   - More data = longer transfer time = more risk
+   - More users = less tolerance for downtime
+
+**What the 3 credits cover**:
+- **Analysis & Planning** (0.5 credits): Understanding your schema
+- **Schema Migration** (0.5 credits): Recreating structure safely
+- **Data Transfer** (1 credit): Moving data with validation
+- **Security Migration** (0.5 credits): Porting RLS without gaps
+- **Auth & Testing** (0.5 credits): Users and verification
+
+**The alternative**: DIY migration that could take weeks, risk data loss, or break security.
+
+## What You Get for 3 Credits
+
+Not just a migration. A **complete infrastructure handoff**:
+
+<CardGroup cols={2}>
+  <Card title="Migration Report" icon="file-lines">
+    Complete audit trail:
+    - Every table migrated
+    - Row counts verified
+    - Relationship map
+    - RLS policy summary
+    - Testing results
+  </Card>
+  
+  <Card title="Schema Documentation" icon="sitemap">
+    Your database documented:
+    - ER diagrams
+    - Table descriptions
+    - Column definitions
+    - Index explanations
+    - Function docs
+  </Card>
+  
+  <Card title="Environment Setup" icon="gear">
+    Ready-to-use configuration:
+    - Connection strings
+    - Environment variables
+    - API endpoints
+    - Webhook configs
+  </Card>
+  
+  <Card title="Testing Suite" icon="vial">
+    Validation that it works:
+    - Automated tests
+    - Manual verification
+    - Security audit
+    - Performance baseline
+    - Edge case coverage
+  </Card>
+  
+  <Card title="Communication Templates" icon="envelope">
+    User transition support:
+    - Password reset emails
+    - Migration announcement
+    - FAQ document
+    - Support responses
+  </Card>
+  
+  <Card title="Rollback Plan" icon="rotate-left">
+    Safety net:
+    - Revert instructions
+    - Backup locations
+    - Emergency contacts
+    - Recovery timeline
+  </Card>
+</CardGroup>
+
+## Compare the Alternatives
+
+| Approach | Cost | Risk | Time | Result |
+|----------|------|------|------|--------|
+| **Our Migration** (3 credits) | $237 | Low | 2-5 days | Production-ready |
+| **Hire Developer** | $3,000+ | Medium | 1-2 weeks | Variable quality |
+| **DIY Migration** | $0 (your time) | High | 3-4 weeks | Unknown |
+| **Stay on Lovable** | $0 | Medium | — | Locked in |
+
+**DIY hidden costs**:
+- Your time: 80-120 hours × $100/hour = $8,000-12,000
+- Opportunity cost: Features not built
+- Risk: Data loss (incalculable)
+- Stress: Learning migration tools under pressure
+
+## Who Needs This?
+
+<AccordionGroup>
+  <Accordion title="Pre-Launch Startups">
+    **The situation**: Built MVP in Lovable, now need to launch.
+    
+    **Why 3 credits**: Can't launch on shared infrastructure. Need:
+    - Dedicated resources
+    - Custom domain
+    - Direct database access
+    - Full control
+    
+    **The alternative**: Stay on Lovable, hit limits, migrate in crisis.
+  </Accordion>
+  
+  <Accordion title="Growing Products">
+    **The situation**: 100+ tables, hitting Lovable constraints.
+    
+    **Why 3 credits**: Need advanced features:
+    - Custom PostgreSQL extensions
+    - Complex RLS policies
+    - Real-time at scale
+    - Edge functions
+    
+    **The alternative**: Patchwork solutions, technical debt, slow performance.
+  </Accordion>
+  
+  <Accordion title="Enterprise Teams">
+    **The situation**: Compliance, security, audit requirements.
+    
+    **Why 3 credits**: Can't use shared backend:
+    - SOC 2 requirements
+    - Data residency needs
+    - Security audits
+    - SLA guarantees
+    
+    **The alternative**: Rebuild from scratch (3-6 months, $50K+).
+  </Accordion>
+</AccordionGroup>
+
+## The Bottom Line
+
+<Card title="3 credits = Insurance + Expertise + Time Saved" icon="calculator">
+  You're not paying for a script. You're paying for:
+  - 15+ years of combined database experience
+  - Tested migration processes
+  - Error handling and recovery
+  - Validation and verification
+  - Documentation and handoff
+</Card>
+
+**Questions to ask yourself**:
+1. What's the cost of losing even 1% of your data?
+2. How many hours can your team afford to spend on migration?
+3. What's the risk of breaking RLS and exposing user data?
+4. Can you afford downtime while you figure it out?
+
+If the answer to any of these makes you nervous, the 3 credits are worth it.
+
+<Info>
+  Still deciding? [See what's included](/cloud-migration/what-included) or [set up your Supabase project](/cloud-migration/supabase-setup) to get started.
+</Info>

@@ -1,0 +1,419 @@
+---
+title: "What Gets Converted"
+description: "Detailed breakdown of React patterns transformed to Next.js"
+icon: "check-circle"
+---
+
+# What Gets Converted
+
+The CLI handles the mechanical transformation of React patterns to Next.js equivalents. Here's the comprehensive breakdown.
+
+## React Router → Next.js Navigation
+
+<AccordionGroup>
+  <Accordion title="Navigation Hooks">
+    <CodeGroup>
+    
+    ```tsx React Router
+    import { useNavigate } from 'react-router-dom';
+    
+    const MyComponent = () => {
+      const navigate = useNavigate();
+      
+      const handleClick = () => {
+        navigate('/dashboard');
+      };
+    };
+    ```
+    
+    ```tsx Next.js
+    'use client';
+    
+    import { useRouter } from 'next/navigation';
+    
+    const MyComponent = () => {
+      const router = useRouter();
+      
+      const handleClick = () => {
+        router.push('/dashboard');
+      };
+    };
+    ```
+    
+    </CodeGroup>
+  </Accordion>
+  
+  <Accordion title="Link Components">
+    <CodeGroup>
+    
+    ```tsx React Router
+    import { Link } from 'react-router-dom';
+    
+    <Link to="/about">About</Link>
+    ```
+    
+    ```tsx Next.js
+    import Link from 'next/link';
+    
+    <Link href="/about">About</Link>
+    ```
+    
+    </CodeGroup>
+  </Accordion>
+  
+  <Accordion title="Location/Pathname">
+    <CodeGroup>
+    
+    ```tsx React Router
+    import { useLocation } from 'react-router-dom';
+    
+    const MyComponent = () => {
+      const location = useLocation();
+      const searchParams = new URLSearchParams(location.search);
+      
+      return (
+        <div>
+          <p>Path: {location.pathname}</p>
+          <p>Query: {searchParams.get('id')}</p>
+        </div>
+      );
+    };
+    ```
+    
+    ```tsx Next.js
+    'use client';
+    
+    import { usePathname, useSearchParams } from 'next/navigation';
+    
+    const MyComponent = () => {
+      const pathname = usePathname();
+      const searchParams = useSearchParams();
+      
+      return (
+        <div>
+          <p>Path: {pathname}</p>
+          <p>Query: {searchParams.get('id')}</p>
+        </div>
+      );
+    };
+    ```
+    
+    </CodeGroup>
+  </Accordion>
+  
+  <Accordion title="Route Parameters">
+    <CodeGroup>
+    
+    ```tsx React Router
+    import { useParams } from 'react-router-dom';
+    
+    // Route: /user/:id
+    const UserProfile = () => {
+      const { id } = useParams();
+      return <div>User: {id}</div>;
+    };
+    ```
+    
+    ```tsx Next.js
+    'use client';
+    
+    import { useParams } from 'next/navigation';
+    
+    // File: app/user/[id]/page.tsx
+    const UserProfile = () => {
+      const params = useParams();
+      const id = params.id;
+      return <div>User: {id}</div>;
+    };
+    ```
+    
+    </CodeGroup>
+  </Accordion>
+  
+  <Accordion title="Programmatic Navigation">
+    <CodeGroup>
+    
+    ```tsx React Router
+    import { useNavigate } from 'react-router-dom';
+    
+    const MyComponent = () => {
+      const navigate = useNavigate();
+      
+      const goBack = () => navigate(-1);
+      const goForward = () => navigate(1);
+      const replaceRoute = () => navigate('/new-route', { replace: true });
+    };
+    ```
+    
+    ```tsx Next.js
+    'use client';
+    
+    import { useRouter } from 'next/navigation';
+    
+    const MyComponent = () => {
+      const router = useRouter();
+      
+      const goBack = () => router.back();
+      const goForward = () => router.forward();
+      const replaceRoute = () => router.replace('/new-route');
+    };
+    ```
+    
+    </CodeGroup>
+  </Accordion>
+</AccordionGroup>
+
+## React Hooks
+
+<CardGroup cols={2}>
+  <Card title="State Management" icon="database">
+    - `useState` → Preserved
+    - `useReducer` → Preserved
+    - `useContext` → Preserved (with 'use client' added)
+  </Card>
+  
+  <Card title="Side Effects" icon="rotate">
+    - `useEffect` → Preserved
+    - `useLayoutEffect` → Preserved
+    - `useInsertionEffect` → Preserved
+  </Card>
+  
+  <Card title="Memoization" icon="memory">
+    - `useMemo` → Preserved
+    - `useCallback` → Preserved
+    - `useRef` → Preserved
+  </Card>
+  
+  <Card title="Custom Hooks" icon="puzzle">
+    - All custom hooks preserved
+    - 'use client' added if they use browser APIs
+    - Type signatures maintained
+  </Card>
+</CardGroup>
+
+## Styling & CSS
+
+<AccordionGroup>
+  <Accordion title="Tailwind CSS">
+    All Tailwind classes are preserved exactly as written:
+    
+    ```tsx
+    // Before & After (unchanged)
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    ```
+    
+    The CLI also preserves:
+    - Tailwind configuration (copies `tailwind.config.js`)
+    - Custom utility classes
+    - `@apply` directives in CSS
+  </Accordion>
+  
+  <Accordion title="CSS Modules">
+    ```tsx
+    // Before
+    import styles from './Button.module.css';
+    
+    <button className={styles.primary}>Click</button>
+    
+    // After (unchanged)
+    import styles from './Button.module.css';
+    
+    <button className={styles.primary}>Click</button>
+    ```
+  </Accordion>
+  
+  <Accordion title="Styled Components">
+    Detected and preserved with 'use client' directive:
+    
+    ```tsx
+    // Before
+    import styled from 'styled-components';
+    
+    const Button = styled.button`
+      background: blue;
+    `;
+    
+    // After
+    'use client';
+    
+    import styled from 'styled-components';
+    
+    const Button = styled.button`
+      background: blue;
+    `;
+    ```
+    
+    <Warning>
+      Requires `styled-components` configuration in `next.config.js` for SSR compatibility.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+## React Helmet → Next.js Head
+
+<CodeGroup>
+
+```tsx React Helmet
+import { Helmet } from 'react-helmet';
+
+const Page = () => (
+  <>
+    <Helmet>
+      <title>My Page Title</title>
+      <meta name="description" content="Page description" />
+      <meta property="og:title" content="My Page" />
+    </Helmet>
+    <div>Content</div>
+  </>
+);
+```
+
+```tsx Next.js
+import Head from 'next/head';
+
+const Page = () => (
+  <>
+    <Head>
+      <title>My Page Title</title>
+      <meta name="description" content="Page description" />
+      <meta property="og:title" content="My Page" />
+    </Head>
+    <div>Content</div>
+  </>
+);
+```
+
+</CodeGroup>
+
+## Context Providers
+
+React Context is preserved with automatic 'use client' detection:
+
+<CodeGroup>
+
+```tsx React
+import { createContext, useContext, useState } from 'react';
+
+const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export const useTheme = () => useContext(ThemeContext);
+```
+
+```tsx Next.js
+'use client';
+
+import { createContext, useContext, useState } from 'react';
+
+const ThemeContext = createContext();
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export const useTheme = () => useContext(ThemeContext);
+```
+
+</CodeGroup>
+
+## File Structure Transformation
+
+The CLI restructures your project from Vite/React Router conventions to Next.js App Router:
+
+<CodeGroup>
+
+```bash Before (React + Vite)
+src/
+├── App.tsx
+├── main.tsx
+├── components/
+│   ├── Header.tsx
+│   └── Navigation.tsx
+├── pages/
+│   ├── Home.tsx
+│   ├── About.tsx
+│   └── Contact.tsx
+├── hooks/
+│   └── useAuth.ts
+└── styles/
+    └── index.css
+```
+
+```bash After (Next.js App Router)
+app/
+├── layout.tsx
+├── page.tsx           # Home
+├── about/
+│   └── page.tsx
+├── contact/
+│   └── page.tsx
+└── globals.css
+components/
+├── Header.tsx
+└── Navigation.tsx
+hooks/
+└── useAuth.ts
+```
+
+</CodeGroup>
+
+## Automatic 'use client' Detection
+
+The CLI analyzes your code and adds the 'use client' directive when needed:
+
+<CardGroup cols={2}>
+  <Card title="Triggers 'use client'" icon="check">
+    - React hooks (`useState`, `useEffect`, etc.)
+    - Event handlers (`onClick`, `onChange`)
+    - Browser APIs (`window`, `document`, `localStorage`)
+    - Third-party client libraries
+  </Card>
+  
+  <Card title="Stays Server Component" icon="xmark">
+    - Pure presentational components
+    - Data fetching
+    - Async components
+    - No browser APIs used
+  </Card>
+</CardGroup>
+
+## TypeScript Preservation
+
+All TypeScript types are maintained:
+
+- Interface definitions
+- Generic types
+- Type aliases
+- Prop types
+- Return types
+- Import types
+
+## What's Not Converted (By Design)
+
+These remain unchanged and work as-is:
+
+- API calls (fetch, axios, etc.)
+- State management libraries (Redux, Zustand, etc.)
+- UI libraries (shadcn/ui, Material-UI, etc.)
+- Form libraries (React Hook Form, Formik, etc.)
+- Date libraries (date-fns, moment, etc.)
+- Testing code (Jest, Testing Library, etc.)
+
+<Info>
+  Want to see what **breaks**? Check out [What Breaks](/cli/what-breaks).
+</Info>

@@ -1,0 +1,222 @@
+---
+title: "CLI Overview"
+description: "Stop waiting for Lovable to export. Get your React code converted to Next.js in minutes."
+icon: "terminal"
+---
+
+# The Gateway Drug
+
+<Card title="Convert your Lovable app to Next.js" icon="code">
+  A smart CLI tool that automatically converts your React Router applications to Next.js 14+ using the new App Router. Escape Lovable's ecosystem and own your code.
+</Card>
+
+## What You're Buying
+
+**Not a service. A tool.** You pay once, you own the conversion. Convert FROM Lovable TO Next.js. No monthly fees, no vendor lock-in.
+
+## What Exactly Gets Converted
+
+<CardGroup cols={2}>
+  <Card title="React Router → Next.js" icon="route">
+    - `useNavigate()` → `useRouter()`
+    - `<Link to="">` → `<Link href="">`
+    - `useLocation()` → `usePathname()` + `useSearchParams()`
+    - `useParams()` → Next.js `useParams()`
+  </Card>
+  
+  <Card title="React Hooks & State" icon="bolt">
+    - `useState`, `useEffect`, custom hooks preserved
+    - Context providers maintained
+    - Automatic 'use client' directive detection
+  </Card>
+  
+  <Card title="Styling Systems" icon="palette">
+    - Tailwind CSS classes preserved
+    - CSS Modules support
+    - Styled-components detection
+  </Card>
+  
+  <Card title="Components" icon="box">
+    - Functional components converted
+    - Props interfaces maintained
+    - TypeScript types preserved
+  </Card>
+</CardGroup>
+
+## What Breaks
+
+<Warning>
+  These require manual intervention after conversion
+</Warning>
+
+<AccordionGroup>
+  <Accordion title="Lovable's Magic Components">
+    Lovable injects proprietary components that don't exist outside their platform:
+    - Custom UI libraries with Lovable-specific props
+    - Pre-built authentication components
+    - Managed form components
+    
+    **Fix**: Replace with standard React components or shadcn/ui
+  </Accordion>
+  
+  <Accordion title="Hardcoded API Calls">
+    Lovable apps often have hardcoded references to their managed APIs:
+    - `/api/lovable/*` endpoints
+    - Internal service URLs
+    - Managed auth endpoints
+    
+    **Fix**: Update to your own API endpoints or Supabase
+  </Accordion>
+  
+  <Accordion title="Environment Variables">
+    Lovable-specific env vars won't work:
+    - `VITE_LOVABLE_*` variables
+    - Managed database connection strings
+    - Platform-specific config
+    
+    **Fix**: Create your own `.env.local` with correct values
+  </Accordion>
+</AccordionGroup>
+
+## The 1-Credit Escape
+
+<Steps>
+  <Step title="Install the CLI">
+    ```bash
+    npm install -g next-lovable
+    ```
+  </Step>
+  
+  <Step title="Test for free">
+    ```bash
+    next-lovable convert MyComponent.tsx --dry-run --show-diff
+    ```
+    Single file conversions are free. No account needed.
+  </Step>
+  
+  <Step title="Convert your files">
+    ```bash
+    next-lovable convert src/components/*.tsx
+    ```
+    Each file consumes 1 conversion credit.
+  </Step>
+  
+  <Step title="Full project migration">
+    ```bash
+    next-lovable migrate ./my-app ./my-next-app
+    ```
+    Full migrations require authentication and 1 migration credit.
+  </Step>
+</Steps>
+
+## When to Use CLI vs Cloud Migration
+
+<Tabs>
+  <Tab title="CLI Only (1 Credit)">
+    **Use when:**
+    - You just want the code
+    - You're fine staying on Lovable's backend for now
+    - You have your own database solution
+    - You want to test the conversion first
+    
+    **What you get:**
+    - Next.js App Router codebase
+    - React Router converted to Next.js navigation
+    - TypeScript preserved
+    
+    **What stays the same:**
+    - Database (still on Lovable's Supabase)
+    - Auth (still using Lovable's managed auth)
+    - Storage (still on their buckets)
+  </Tab>
+  
+  <Tab title="CLI + Cloud Migration (3 Credits)">
+    **Use when:**
+    - You want complete independence
+    - You need your own Supabase project
+    - You want to own your data
+    - You're ready for production
+    
+    **What you get:**
+    - Everything from CLI
+    - Your own Supabase project
+    - Migrated data, auth users, RLS policies
+    - Storage bucket reconfiguration
+  </Tab>
+</Tabs>
+
+## Real-World Example
+
+<CodeGroup>
+
+```tsx Before (React Router)
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
+export const Navigation = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return (
+    <nav>
+      <Link to="/dashboard">Dashboard</Link>
+      <button onClick={() => navigate('/settings')}>
+        Settings
+      </button>
+      <p>Current: {location.pathname}</p>
+    </nav>
+  );
+};
+```
+
+```tsx After (Next.js)
+'use client';
+
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+
+export const Navigation = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  return (
+    <nav>
+      <Link href="/dashboard">Dashboard</Link>
+      <button onClick={() => router.push('/settings')}>
+        Settings
+      </button>
+      <p>Current: {pathname}</p>
+    </nav>
+  );
+};
+```
+
+</CodeGroup>
+
+## Quick Command Reference
+
+| Task | Command | Credits |
+|------|---------|---------|
+| Test single file | `next-lovable convert file.tsx --dry-run` | Free |
+| Convert file | `next-lovable convert file.tsx` | 1 per file |
+| Preview full migration | `next-lovable migrate ./app --dry-run` | Shows estimate |
+| Full migration | `next-lovable migrate ./app ./next-app` | 1 credit |
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Install CLI" href="/cli/installation" icon="download">
+    Get the tool installed in 2 minutes
+  </Card>
+  
+  <Card title="Quick Start" href="/cli/quick-start" icon="play">
+    Convert your first file
+  </Card>
+  
+  <Card title="Full Migration" href="/cli/migrate" icon="folder-arrow-right">
+    Migrate an entire project
+  </Card>
+</CardGroup>
+
+<Info>
+  **Need to migrate your backend too?** Check out [Cloud Migration](/cloud-migration) for the complete escape plan.
+</Info>
