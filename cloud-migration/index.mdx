@@ -1,95 +1,133 @@
 ---
 title: "Cloud Migration Overview"
-description: "Infrastructure independence from Lovable's managed backend. Migrate to your own Supabase project."
+description: "Infrastructure independence from Lovable's managed backend. Migrate to your own Supabase project using our Chrome Extension."
 icon: "cloud"
 ---
 
 # The Escape Hatch
 
 <Card title="Infrastructure Independence" icon="unlock">
-  Use our Chrome Extension to migrate from Lovable's proprietary Supabase instance to your own Supabase project. Full data ownership, custom RLS policies, and production-ready infrastructure. Self-service migration.
+  Use our Chrome Extension to migrate from Lovable's proprietary Supabase instance to your own Supabase project. Full data ownership, custom RLS policies, and production-ready infrastructure. Self-service migration completes in under 5 minutes.
 </Card>
 
-## This Is Not "Just Moving a Database"
-
-You're buying **complete infrastructure independence**:
+## Two Tiers: Choose Your Complexity
 
 <CardGroup cols={2}>
-  <Card title="Data Migration" icon="database">
-    All tables, rows, and relationships transferred to your Supabase
+  <Card title="Self-Service: $229" icon="user">
+    **Best for: MVPs, side projects**
+    
+    - Up to 50 tables
+    - Standard auth only
+    - Automatic migration via Chrome Extension
+    - DIY troubleshooting
+    - Completes in under 5 minutes
+    
+    <Button href="https://chromewebstore.google.com/detail/lovable-cloud-to-supabase/ekleklhofagefcgokjlgcjkkmlkbdlnp">Get the Extension</Button>
   </Card>
   
-  <Card title="Auth Migration" icon="shield">
-    User accounts, passwords (with reset), OAuth connections
-  </Card>
-  
-  <Card title="RLS Policies" icon="lock">
-    Row Level Security rules ported and tested
-  </Card>
-  
-  <Card title="Edge Functions" icon="bolt">
-    Serverless functions transferred and reconfigured
-  </Card>
-  
-  <Card title="Database Functions" icon="code">
-    PostgreSQL functions and triggers preserved
+  <Card title="White-Glove: €850+" icon="hand-holding-hand">
+    **Best for: Production apps**
+    
+    - Unlimited complexity
+    - External APIs & webhooks (Stripe, OpenAI, etc.)
+    - Complex RLS policies
+    - We handle edge cases
+    - Custom SQL triggers
+    - Priority support
+    
+    <Button href="https://cal.com/chiheb-nabil/next.js-migration-help-done-for-you-service">Book Consultation</Button>
   </Card>
 </CardGroup>
 
-## Why 3 Credits?
+## Quick Check: Which Tier Fits You?
 
-<Warning>
-  **When you have 370 tables, you're not buying a script. You're buying insurance.**
-</Warning>
+<Check>
+  - [ ] I have fewer than 50 tables
+  - [ ] No complex external integrations (Stripe, OpenAI, etc.)
+  - [ ] I can handle manual fixes if needed
+</Check>
 
-The Polish client story: Their Lovable app had grown to 370 tables with complex relationships and custom RLS policies. A manual migration would have taken weeks and risked data corruption.
+**All checked?** → **Self-Service ($229)**
 
-**What the 3 credits cover:**
+**Any unchecked?** → **White-Glove (€850+)**
 
-1. **Analysis & Planning** (0.5 credits)
-   - Schema mapping
-   - Relationship analysis
-   - Migration strategy
+## Prerequisites
 
-2. **Data Migration** (1 credit)
-   - Table-by-table transfer
-   - Foreign key preservation
-   - Data validation
+<Steps>
+  <Step title="Check Your Project Size">
+    Not sure if your project is "simple" or "complex"?
+    
+    **If you have 100+ tables** or integrations with Stripe, OpenAI, or other external APIs, **skip to the White-Glove option**.
+  </Step>
+  
+  <Step title="Prepare Your Supabase Project">
+    Create a new Supabase project at [supabase.com](https://supabase.com) if you haven't already.
+    
+    You'll need these credentials (used locally only):
+    
+    <AccordionGroup>
+      <Accordion title="Project Reference ID">
+        **Location**: Supabase Dashboard → Settings → General
+        
+        Looks like: `abc123def456`
+      </Accordion>
+      
+      <Accordion title="Personal Access Token (PAT)">
+        **Location**: Supabase Dashboard → Account → Access Tokens
+        
+        Used for authentication with the Extension
+      </Accordion>
+      
+      <Accordion title="Anon Key (Public)">
+        **Location**: Supabase Dashboard → Settings → API → Project API Keys
+        
+        The `anon` public key
+      </Accordion>
+      
+      <Accordion title="Service Role Key (Secret)">
+        **Location**: Supabase Dashboard → Settings → API → Project API Keys
+        
+        The `service_role` key. **Keep this secret!**
+      </Accordion>
+    </AccordionGroup>
+    
+    <Info>
+      **Your credentials are used locally only** — they're never sent or stored anywhere. Complete privacy guaranteed.
+    </Info>
+  </Step>
+</Steps>
 
-3. **Auth & Security** (0.5 credits)
-   - User account migration
-   - OAuth reconfiguration
-   - RLS policy porting
+## The Migration Process
 
-4. **Edge Functions** (0.5 credits)
-    - Function code migration
-    - Environment setup
-    - Testing
-
-5. **Testing & Validation** (0.5 credits)
-   - End-to-end testing
-   - Security verification
-   - Performance checks
-
-## The Only Caveat: Password Resets
-
-<Info>
-  **Auth sessions cannot be migrated.** Users will need to reset their passwords.
-</Info>
-
-This is a technical limitation, not a choice:
-- Supabase auth tokens are tied to the project
-- Sessions are cryptographically bound
-- OAuth providers need reconfiguration
-
-**How we handle it:**
-- Pre-migration: Email users about upcoming change
-- Post-migration: Trigger password reset flow
-- Alternative: Magic link login for seamless transition
+<Steps>
+  <Step title="1. Install Extension & Connect">
+    Install the **Lovable Cloud to Supabase** Chrome Extension and connect your credentials.
+    
+    [Install Extension →](https://chromewebstore.google.com/detail/lovable-cloud-to-supabase/ekleklhofagefcgokjlgcjkkmlkbdlnp)
+  </Step>
+  
+  <Step title="2. Automatic Migration">
+    Once connected, the extension clones your Lovable Cloud setup and deploys it to Supabase automatically.
+    
+    **What's migrated:**
+    - **Database Schema** — Tables & rows
+    - **Edge Functions** — Serverless logic
+    - **Authentication** — Users & permissions
+    
+    **Complexity Check:**
+    Standard schemas migrate automatically. Custom SQL triggers or complex RLS policies may need manual review.
+    
+    <Info>
+      **Migration typically completes in under 5 minutes.** You'll receive a notification when it's ready.
+    </Info>
+  </Step>
+  
+  <Step title="3. You're Done! 🎉">
+    Your project is now running on Supabase with all your data, functions, and users migrated successfully.
+  </Step>
+</Steps>
 
 ## What's Included
-
-The **Lovable Cloud to Supabase** Chrome Extension provides a guided, self-service migration:
 
 <AccordionGroup>
   <Accordion title="Complete Database Migration">
@@ -98,24 +136,6 @@ The **Lovable Cloud to Supabase** Chrome Extension provides a guided, self-servi
     - Data integrity validation
     - Index and constraint preservation
     - Enum and custom type migration
-    - Guided step-by-step process in the Extension
-  </Accordion>
-  
-  <Accordion title="Row Level Security (RLS)">
-    Your security model, preserved:
-    - All RLS policies ported
-    - Policy testing and validation
-    - Extension validates policies post-migration
-    - Permission verification
-  </Accordion>
-  
-  <Accordion title="Authentication System">
-    User accounts transferred:
-    - Email/password accounts
-    - OAuth provider connections
-    - User metadata preservation
-    - Password reset flow setup
-    - Extension guides user communication
   </Accordion>
   
   <Accordion title="Edge Functions">
@@ -125,171 +145,116 @@ The **Lovable Cloud to Supabase** Chrome Extension provides a guided, self-servi
     - Secrets management
     - Trigger reconfiguration
   </Accordion>
+  
+  <Accordion title="Authentication System">
+    User accounts transferred:
+    - Email/password accounts
+    - User metadata preservation
+    - OAuth provider identities (reconfiguration required)
+    - Password reset flow guidance
+  </Accordion>
 </AccordionGroup>
 
-<Card title="How It Works" icon="puzzle">
-  1. Install the Chrome Extension
-  2. Connect your Lovable project (read-only)
-  3. Connect your new Supabase project
-  4. The Extension guides you through each migration step
-  5. Execute migration with one click
-  6. Verify and test in your new Supabase
-</Card>
+## What's NOT Included (Manual Steps)
 
-## The Migration Process (Chrome Extension)
+<Warning>
+  These require manual action after migration:
+</Warning>
+
+<AccordionGroup>
+  <Accordion title="Storage Buckets & Files">
+    **Storage is NOT automatically migrated.**
+    
+    After migration, you'll need to:
+    - Create new storage buckets in your Supabase
+    - Upload files manually or via script
+    - Update file references in your database
+    
+    [Learn more about Storage Migration](/cloud-migration/post-migration#storage)
+  </Accordion>
+  
+  <Accordion title="Complex RLS Policies">
+    Standard RLS policies migrate automatically.
+    
+    **Complex policies may need manual review:**
+    - Policies with custom SQL functions
+    - Multi-table policy dependencies
+    - Complex permission logic
+  </Accordion>
+  
+  <Accordion title="External API Integrations">
+    Third-party services require manual reconfiguration:
+    - Stripe webhooks
+    - OpenAI API keys
+    - Custom payment processors
+    - External auth providers
+  </Accordion>
+</AccordionGroup>
+
+## Post-Migration Checklist
+
+After migration completes, complete these steps to go live:
 
 <Steps>
-  <Step title="Install Extension">
-    Get the **Lovable Cloud to Supabase** extension from the Chrome Web Store
+  <Step title="1. Update AI/API Keys">
+    If your project uses AI features:
+    - Move to OpenRouter (recommended) or your preferred provider
+    - Update your API key in Supabase environment variables
+  </Step>
+  
+  <Step title="2. Recreate Environment Variables">
+    Copy your environment variables from Lovable to Supabase:
+    - Go to Supabase Dashboard → Settings → API
+    - Add all required env vars
+  </Step>
+  
+  <Step title="3. Re-enable Social Auth">
+    OAuth providers need reconfiguration:
+    - Google, GitHub, Apple, etc.
+    - Update callback URLs to your Supabase project
+    - Test login flow
+  </Step>
+  
+  <Step title="4. Migrate Storage (Manual)">
+    Move files to Supabase Storage:
+    - Create buckets matching your old structure
+    - Upload files
+    - Update database references
     
-    [Install Extension →](https://chromewebstore.google.com/detail/lovable-cloud-to-supabase/ekleklhofagefcgokjlgcjkkmlkbdlnp)
-  </Step>
-  
-  <Step title="Connect Lovable">
-    The Extension analyzes your current setup:
-    - Table count and complexity
-    - RLS policy audit
-    - Auth provider configuration
-    - Data volume estimation
-  </Step>
-  
-  <Step title="Connect Supabase">
-    Link your new Supabase project:
-    - Enter project URL
-    - Provide service role key
-    - Extension validates connection
-  </Step>
-  
-  <Step title="Schema Migration">
-    The Extension recreates your database structure:
-    - Table definitions
-    - Relationships
-    - Indexes
-    - Constraints
-    - Progress tracking
-  </Step>
-  
-  <Step title="Data Transfer">
-    Move your actual data:
-    - Batch transfers with resume capability
-    - Relationship preservation
-    - Real-time validation
-    - Error handling with retry
-  </Step>
-  
-  <Step title="Auth Migration">
-    Transfer user accounts:
-    - User metadata
-    - OAuth connections
-    - Email confirmations
-    - Password reset setup guidance
-  </Step>
-  
-  <Step title="Security Porting">
-    Migrate RLS policies:
-    - Policy recreation
-    - Built-in permission testing
-    - Security validation
-  </Step>
-  
-  <Step title="Verify & Complete">
-    The Extension validates:
-    - End-to-end testing
-    - Row count verification
-    - Policy enforcement checks
+    [Storage Migration Guide →](/cloud-migration/post-migration#storage)
   </Step>
 </Steps>
 
-## When Do You Need This?
+## Need Help with Complex Logic?
 
-<Tabs>
-  <Tab title="You're Ready to Launch">
-    **The Trigger**: You're about to go live and need your own infrastructure.
-    
-    **Why Now**: Can't launch on Lovable's shared backend. You need:
-    - Dedicated resources
-    - Custom domain
-    - Direct database access
-    - Full control
-  </Tab>
+<Card title="White-Glove Migration: €850+" icon="hand-holding-hand">
+  If your project has:
+  - 100+ tables
+  - Stripe, OpenAI, or other external integrations
+  - Complex custom SQL
+  - Custom RLS policies
   
-  <Tab title="You're Hitting Limits">
-    **The Trigger**: Lovable's constraints are blocking you.
-    
-    **Why Now**: You need:
-    - Direct SQL access
-    - Custom PostgreSQL extensions
-    - Advanced RLS policies
-    - Real-time subscriptions
-    - Edge functions
-  </Tab>
+  We handle it all for you.
   
-  <Tab title="You've Already Migrated Frontend">
-    **The Trigger**: CLI converted your React code, but you're still on their backend.
-    
-    **Why Now**: Complete the escape. Get full independence from Lovable's ecosystem.
-  </Tab>
-  
-  <Tab title="You're Growing Fast">
-    **The Trigger**: 370 tables, thousands of users.
-    
-    **Why Now**: You need:
-    - Scalable infrastructure
-    - Performance optimization
-    - Dedicated support
-    - SLA guarantees
-  </Tab>
-</Tabs>
-
-## What's Different After Migration?
-
-| Feature | Lovable's Backend | Your Supabase |
-|---------|------------------|---------------|
-| Database Access | Limited | Full PostgreSQL |
-| RLS Policies | Basic | Advanced |
-| Edge Functions | Restricted | Full access |
-| Custom Domain | No | Yes |
-| Direct SQL | No | Yes |
-| Backups | Managed | Controlled |
-| Monitoring | Basic | Advanced |
-
-## What's NOT Included
-
-**Storage/Files**: Storage buckets and file uploads are not migrated as part of this service. You'll need to:
-- Set up new storage buckets in your Supabase
-- Re-upload files or migrate them separately
-- Update file references in your database
-
-**Why?** File migrations are complex, time-consuming, and often require different strategies based on volume and access patterns. We focus on the critical database and auth infrastructure.
-
-## Prerequisites
-
-Before we start:
-
-<Check>
-  - [ ] Lovable app is functional and stable
-  - [ ] You've purchased 3 migration credits
-  - [ ] You have a Supabase account (or we'll create one)
-  - [ ] You understand the password reset requirement
-  - [ ] You've notified users about upcoming changes
-</Check>
+  [Book a Consultation →](https://cal.com/chiheb-nabil/next.js-migration-help-done-for-you-service)
+</Card>
 
 ## Next Steps
 
 <CardGroup cols={3}>
-  <Card title="What's Included" href="/cloud-migration/what-included" icon="list-check">
-    Detailed breakdown of the migration scope
+  <Card title="Get the Extension" href="https://chromewebstore.google.com/detail/lovable-cloud-to-supabase/ekleklhofagefcgokjlgcjkkmlkbdlnp" icon="puzzle">
+    Start your $229 Self-Service migration
   </Card>
   
-  <Card title="Why 3 Credits" href="/cloud-migration/why-3-credits" icon="coins">
-    Understanding the value and complexity
+  <Card title="White-Glove Service" href="https://cal.com/chiheb-nabil/next.js-migration-help-done-for-you-service" icon="hand-holding-hand">
+    Book consultation for complex migrations
   </Card>
   
-  <Card title="Supabase Setup" href="/cloud-migration/supabase-setup" icon="gear">
-    Prepare your new Supabase project
+  <Card title="Post-Migration Guide" href="/cloud-migration/post-migration" icon="list-check">
+    Complete your migration setup
   </Card>
 </CardGroup>
 
 <Info>
-  **Just need the frontend code?** Start with the [CLI](/cli) for 1 credit. Add Cloud Migration later when you're ready.
+  **Just need the frontend code?** Start with the [CLI](/cli) to convert your React app to Next.js first.
 </Info>
